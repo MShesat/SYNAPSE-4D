@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "synapse4d"
-version = "1.0.0"
-description = "Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly"
+version = "2.5.0"
+description = "Multi-Dimensional Cognitive State Matrix with Bi-temporal Modeling, Local-First SQLite/Markdown, and Autonomous Topological Self-Assembly"
 readme = "README.md"
 authors = [{ name = "Ángel Ruiz (@MShesat)" }]
 license = { text = "MIT" }
@@ -19,13 +19,18 @@ classifiers = [
     "Intended Audience :: Science/Research"
 ]
 dependencies = [
-    "chromadb>=0.4.0",
-    "sentence-transformers>=2.2.0"
+    "filelock>=3.12.0",
+    "pydantic>=2.0.0",
+    "fastembed>=0.9.0",
+    "onnxruntime>=1.14.0",
+    "numpy>=1.22.0"
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "hypothesis>=6.0.0",
     "ruff>=0.1.0"
 ]
 
