@@ -2,12 +2,13 @@
 title: "Active Working Memory Context"
 type: working-memory
 status: active
+dimension: D1
 ---
 
-# Active Working Memory (Letta Scratchpad)
+# Active Working Memory (Focus Scratchpad)
 
 ## Current Objective
-- System initialized with Synapse 4D quad-hybrid cognitive memory.
+- System initialized with Synapse 4D Multi-Dimensional Cognitive Matrix.
 
 ## Active Projects
 - [[starter-project]]: Default onboarding workspace.

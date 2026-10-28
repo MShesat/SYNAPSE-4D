@@ -2,45 +2,49 @@ from pathlib import Path
 import tempfile
 import shutil
 
-from synapse4d.pillars.letta import LettaWorkingMemory
-from synapse4d.pillars.mem0 import Mem0FactExtractor
-from synapse4d.pillars.graphiti import GraphitiTemporalGraph
-from synapse4d.pillars.amem import AMEMZettelkasten
+from synapse4d.dimensions.focus import FocusEngine
+from synapse4d.dimensions.distiller import FactDistiller
+from synapse4d.dimensions.chronos import ChronosLattice
+from synapse4d.dimensions.mesh import AssociativeMesh
 
-def test_letta_memory():
+def test_focus_engine_d1():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
-        letta = LettaWorkingMemory(tmp)
-        letta.core_memory_replace("TestSection", "Initial Content")
-        ctx = letta.get_context()
-        assert "Initial Content" in ctx["active_context"]
+        focus = FocusEngine(tmp)
+        focus.update_section("Objective", "Synthesize Cognitive State")
+        state = focus.get_focus_state()
+        assert "Synthesize Cognitive State" in state["active_context"]
 
-def test_mem0_fact_diffing():
-    extractor = Mem0FactExtractor()
-    facts = ["Python 3.12 is the primary language", "Use ChromaDB for vectors"]
-    existing = ["Python 3.10 is the primary language"]
-    diff = extractor.diff_facts(facts, existing)
-    assert len(diff["update"]) > 0 or len(diff["add"]) > 0
+def test_fact_distiller_d2():
+    distiller = FactDistiller()
+    raw = "- Python 3.13 is our primary language\n- regla: Never expose private API keys"
+    facts = distiller.distill_atomic_facts(raw)
+    assert len(facts) >= 2
+    assert any(f["authority"] == "axiom" for f in facts)
 
-def test_graphiti_temporal_invalidation():
+def test_chronos_lattice_d3():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
-        graph = GraphitiTemporalGraph(tmp)
-        graph.add_or_update_relation("Agent", "uses_model", "GPT-3.5")
-        res = graph.add_or_update_relation("Agent", "uses_model", "Claude-3.5-Sonnet")
-        assert "GPT-3.5" in res["superseded"]
+        lattice = ChronosLattice(tmp)
+        lattice.register_relation("Engine", "active_driver", "Markdown")
+        res = lattice.register_relation("Engine", "active_driver", "SQLite")
+        assert "Markdown" in res["superseded"]
+        
+        # Test Hebbian potentiation
+        w = lattice.reinforce_synapse("Engine", "SQLite")
+        assert w > 1.0
 
-def test_amem_reciprocal_linking():
+def test_associative_mesh_d4():
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
-        amem = AMEMZettelkasten(tmp)
-        note = amem.generate_atomic_note(
-            title="FastAPI Microservice",
-            summary="A high performance web service",
-            facts=["Runs on uvicorn", "Asynchronous endpoints"],
-            related_notes=["Backend-Architecture"],
-            tags=["api", "web"]
+        mesh = AssociativeMesh(tmp)
+        node = mesh.synthesize_node(
+            title="Kernel Architecture",
+            summary="Autonomous state engine",
+            facts=["Runs local-first", "Zero dependencies"],
+            associations=["Master-Index"],
+            tags=["core", "engine"]
         )
-        assert note.exists()
-        content = note.read_text(encoding="utf-8")
-        assert "[[Backend-Architecture]]" in content
+        assert node.exists()
+        content = node.read_text(encoding="utf-8")
+        assert "[[Master-Index]]" in content

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "synapse4d"
 version = "1.0.0"
-description = "SOTA Quad-Hybrid Cognitive Memory Engine for AI Agents & Obsidian"
+description = "Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly"
 readme = "README.md"
 authors = [{ name = "MShesat" }]
 license = { text = "MIT" }
@@ -15,6 +15,8 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research"
 ]
 dependencies = [
     "chromadb>=0.4.0",

@@ -1,163 +1,176 @@
 """
-Synapse 4D - Core Orchestrator
-Unifies Letta, Mem0, Graphiti, and A-MEM into a single high-performance cognitive engine.
+Synapse 4D - Central Cognitive Engine
+Unifies the 4 Dimensions of Artificial Cognitive State:
+  - D1: Focus Engine (Dynamic Working Attention)
+  - D2: Fact Distiller (Atomic Synthesis & Truth Hierarchy)
+  - D3: Chronos Lattice (Bi-Temporal Knowledge & Hebbian Plasticity)
+  - D4: Associative Mesh (Topological Hypergraph & Zero-Orphan Binding)
 """
 
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import os
+import re
 
-from synapse4d.pillars.letta import LettaWorkingMemory
-from synapse4d.pillars.mem0 import Mem0FactExtractor
-from synapse4d.pillars.graphiti import GraphitiTemporalGraph
-from synapse4d.pillars.amem import AMEMZettelkasten
+from synapse4d.dimensions.focus import FocusEngine
+from synapse4d.dimensions.distiller import FactDistiller
+from synapse4d.dimensions.chronos import ChronosLattice
+from synapse4d.dimensions.mesh import AssociativeMesh
 from synapse4d.memory.vector_store import VectorStore
 
 class SynapseEngine:
-    """The central unified 4D cognitive memory engine."""
+    """The unified 4D Cognitive State Machine for Autonomous Agents."""
 
     def __init__(self, vault_path: str | Path):
         self.vault_path = Path(vault_path).resolve()
         if not self.vault_path.exists():
             raise FileNotFoundError(f"Vault path does not exist: {self.vault_path}")
 
-        # Locate memory dirs
-        self.working_dir = self._resolve_dir(["00_Memoria_de_Trabajo", "00_Working_Memory"])
-        self.episodic_dir = self._resolve_dir(["10_Memoria_Episodica", "10_Episodic_Memory"])
-        self.semantic_dir = self._resolve_dir(["20_Memoria_Semantica", "20_Semantic_Memory"])
-        self.procedural_dir = self._resolve_dir(["30_Memoria_Procedimental", "30_Procedural_Memory"])
-        self.meta_dir = self._resolve_dir(["90_Meta_Sistema", "90_Meta_System"])
+        # Directory resolution (agnostic to localized or standard schemas)
+        self.working_dir = self._resolve_dir(["00_Working_Memory", "00_Memoria_de_Trabajo"])
+        self.episodic_dir = self._resolve_dir(["10_Episodic_Memory", "10_Memoria_Episodica"])
+        self.semantic_dir = self._resolve_dir(["20_Semantic_Memory", "20_Memoria_Semantica"])
+        self.procedural_dir = self._resolve_dir(["30_Procedural_Memory", "30_Memoria_Procedimental"])
+        self.meta_dir = self._resolve_dir(["90_Meta_System", "90_Meta_Sistema"])
 
-        # Synapse local DB dir
-        self.synapse_state_dir = self.vault_path / ".synapse"
-        self.synapse_state_dir.mkdir(parents=True, exist_ok=True)
+        # Synapse local persistent state
+        self.state_dir = self.vault_path / ".synapse"
+        self.state_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize the 4 pillars
-        self.letta = LettaWorkingMemory(self.vault_path)
-        self.mem0 = Mem0FactExtractor()
-        self.graphiti = GraphitiTemporalGraph(self.synapse_state_dir)
-        self.amem = AMEMZettelkasten(self.semantic_dir)
-        self.vector_store = VectorStore(self.synapse_state_dir / "chroma")
+        # Initialize the 4 Core Dimensions
+        self.focus = FocusEngine(self.vault_path)
+        self.distiller = FactDistiller()
+        self.chronos = ChronosLattice(self.state_dir)
+        self.mesh = AssociativeMesh(self.semantic_dir)
+        self.vector_store = VectorStore(self.state_dir / "chroma")
 
     def _resolve_dir(self, candidates: List[str]) -> Path:
         for c in candidates:
             p = self.vault_path / c
             if p.exists():
                 return p
-        default_p = self.vault_path / candidates[0]
-        default_p.mkdir(parents=True, exist_ok=True)
-        return default_p
+        default_dir = self.vault_path / candidates[0]
+        default_dir.mkdir(parents=True, exist_ok=True)
+        return default_dir
 
-    def get_working_context(self) -> Dict[str, str]:
-        """Letta Pillar: Retrieve current scratchpad and user profile."""
-        return self.letta.get_context()
+    def get_working_context(self) -> Dict[str, Any]:
+        """Dimension 1 (Focus): Retrieve current scratchpad state and active attention window."""
+        return self.focus.get_focus_state()
 
     def update_working_memory(self, section: str, content: str) -> bool:
-        """Letta Pillar: Update active context section."""
-        return self.letta.core_memory_replace(section, content)
+        """Dimension 1 (Focus): Dynamically update an active working memory section."""
+        return self.focus.update_section(section, content)
 
-    def search(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
-        """Vector & Graph hybrid retrieval."""
+    def search(self, query: str, limit: int = 5) -> Dict[str, Any]:
+        """Hybrid Multi-Dimensional Retrieval: Combines vector semantics with Chronos Lattice weights."""
         vector_hits = self.vector_store.query(query, n_results=limit)
-        active_edges = self.graphiti.get_active_relations()
+        active_lattice = self.chronos.get_active_lattice(apply_decay=True)
 
-        # Augment with temporal graph relations if relevant
+        # Hebbian reinforcement on matching hits
+        for hit in vector_hits:
+            source = hit.get("metadata", {}).get("source", "")
+            if source:
+                self.chronos.reinforce_synapse("agent_query", source)
+
         return {
             "query": query,
             "vector_results": vector_hits,
             "total_indexed_chunks": self.vector_store.count(),
-            "active_graph_edges": len(active_edges)
+            "active_lattice_edges": len(active_lattice)
         }
 
     def consolidate(self, recent_only: bool = True) -> Dict[str, Any]:
         """
-        Runs the 4D Consolidation Cycle:
-        1. Reads episodic logs (Memories).
-        2. Mem0 extracts facts and resolves conflicts.
-        3. Graphiti invalidates superseded knowledge and updates edges.
-        4. A-MEM generates atomic Zettelkasten notes.
-        5. Letta updates the working memory status.
-        6. ChromaDB syncs vector embeddings.
+        Executes the Autonomous 4D Consolidation Cycle:
+        1. Ingests raw episodic interaction streams.
+        2. D2 (Distiller) extracts atomic facts & arbitrates truth conflicts.
+        3. D3 (Chronos) supersedes invalidated states & updates synaptic timestamps.
+        4. D4 (Mesh) synthesizes cohesive nodes with bidirectional topological bindings.
+        5. D1 (Focus) updates active attention context.
+        6. Vector store synchronizes semantic embeddings.
         """
         stats = {
-            "processed_logs": 0,
-            "facts_extracted": 0,
-            "facts_added": 0,
-            "facts_updated": 0,
-            "facts_noop": 0,
-            "new_notes": 0,
+            "processed_streams": 0,
+            "facts_distilled": 0,
+            "facts_retained": 0,
+            "facts_superseded": 0,
+            "facts_redundant": 0,
             "status": "success"
         }
 
         # Gather episodic files
-        log_files = list(self.episodic_dir.glob("*.md"))
-        if recent_only and log_files:
-            log_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-            log_files = log_files[:3]
+        streams = list(self.episodic_dir.glob("*.md"))
+        if recent_only and streams:
+            streams.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            streams = streams[:3]
 
-        all_facts = []
-        for lf in log_files:
-            stats["processed_logs"] += 1
-            content = lf.read_text(encoding="utf-8", errors="replace")
-            facts = self.mem0.extract_atomic_facts(content)
-            all_facts.extend(facts)
+        incoming_facts = []
+        for s in streams:
+            stats["processed_streams"] += 1
+            content = s.read_text(encoding="utf-8", errors="replace")
+            facts = self.distiller.distill_atomic_facts(content)
+            incoming_facts.extend(facts)
 
-            # Index into vector store
             self.vector_store.upsert(
-                doc_id=lf.stem,
+                doc_id=s.stem,
                 document=content[:2000],
-                metadata={"source": lf.name, "pillar": "episodic"}
+                metadata={"source": s.name, "dimension": "episodic_stream"}
             )
 
-        stats["facts_extracted"] = len(all_facts)
+        stats["facts_distilled"] = len(incoming_facts)
 
-        # Diff against existing semantic facts
+        # Gather existing facts for arbitration
         existing = []
-        rule_files = list(self.semantic_dir.rglob("*.md"))
-        for rf in rule_files:
-            existing.extend(self.mem0.extract_atomic_facts(rf.read_text(encoding="utf-8", errors="replace")))
+        for node in self.semantic_dir.rglob("*.md"):
+            existing.extend(self.distiller.distill_atomic_facts(node.read_text(encoding="utf-8", errors="replace")))
 
-        diff = self.mem0.diff_facts(all_facts, existing)
-        stats["facts_added"] = len(diff["add"])
-        stats["facts_updated"] = len(diff["update"])
-        stats["facts_noop"] = len(diff["noop"])
+        arbitration = self.distiller.arbitrate_conflicts(incoming_facts, existing)
+        stats["facts_retained"] = len(arbitration["retained"])
+        stats["facts_superseded"] = len(arbitration["superseded"])
+        stats["facts_redundant"] = len(arbitration["redundant"])
 
-        # Letta update
-        self.letta.core_memory_append(
+        # Update Chronos Lattice
+        for s in arbitration["superseded"]:
+            self.chronos.register_relation(
+                source=s.get("old_fact", "Entity")[:30],
+                relation="superseded_by",
+                target=s.get("new_fact", "UpdatedEntity")[:30],
+                context=s.get("reason", "")
+            )
+
+        # D1 Focus update
+        self.focus.append_observation(
             "Consolidaciones Recientes",
-            f"Consolidación 4D completada: {stats['facts_added']} agregados, {stats['facts_updated']} actualizados."
+            f"Consolidación 4D ejecutada: {stats['facts_retained']} hechos retenidos, {stats['facts_superseded']} actualizados."
         )
 
         return stats
 
     def audit(self) -> Dict[str, Any]:
-        """Audits the cognitive vault for broken wikilinks, orphans, and health."""
-        all_mds = list(self.vault_path.rglob("*.md"))
-        stem_map = {f.stem.lower(): f for f in all_mds}
+        """Audits the cognitive state for broken topological links, graph fragmentation, and health score."""
+        all_nodes = [f for f in self.vault_path.rglob("*.md") if ".synapse" not in str(f)]
+        stem_map = {f.stem.lower(): f for f in all_nodes}
 
-        broken_links = []
-        total_links = 0
+        broken = []
+        total_bindings = 0
 
-        for f in all_mds:
-            if ".synapse" in str(f):
-                continue
-            text = f.read_text(encoding="utf-8", errors="replace")
-            # Find [[target]]
-            import re
+        for node in all_nodes:
+            text = node.read_text(encoding="utf-8", errors="replace")
             links = re.findall(r'\[\[(.*?)\]\]', text)
-            for link in links:
-                total_links += 1
-                raw_target = link.split("|")[0].split("#")[0].strip()
-                # Handle relative path and extension variants in Obsidian
-                clean_target = raw_target.replace("\\", "/").split("/")[-1].replace(".md", "").strip().lower()
-                if clean_target and clean_target not in stem_map and not clean_target.startswith("$"):
-                    broken_links.append({"file": f.name, "broken_target": link})
+            for l in links:
+                total_bindings += 1
+                raw = l.split("|")[0].split("#")[0].strip()
+                clean = raw.replace("\\", "/").split("/")[-1].replace(".md", "").strip().lower()
+                if clean and clean not in stem_map and not clean.startswith("$"):
+                    broken.append({"file": node.name, "target": l})
+
+        health = round((1.0 - (len(broken) / max(total_bindings, 1))) * 100, 1)
 
         return {
             "vault_path": str(self.vault_path),
-            "total_notes": len(all_mds),
-            "total_wikilinks": total_links,
-            "broken_links_count": len(broken_links),
-            "broken_links": broken_links[:10],
-            "health_score": f"{round((1.0 - (len(broken_links) / max(total_links, 1))) * 100, 1)}%"
+            "total_nodes": len(all_nodes),
+            "total_bindings": total_bindings,
+            "broken_bindings_count": len(broken),
+            "broken_bindings": broken[:10],
+            "health_score": f"{health}%"
         }
