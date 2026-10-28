@@ -39,6 +39,11 @@ def main():
     audit_parser = subparsers.add_parser("audit", help="Audit cognitive vault health, links, and orphans")
     audit_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault")
 
+    # dashboard (Master HUD)
+    dash_parser = subparsers.add_parser("dashboard", help="Launch the Master Cognitive Web HUD (Pro Owner Edition)")
+    dash_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault")
+    dash_parser.add_argument("--port", "-p", type=int, default=5000, help="Web port (default: 5000)")
+
     # serve (MCP Server)
     serve_parser = subparsers.add_parser("serve", help="Start the Synapse 4D MCP Server for Cursor/Claude/Antigravity")
     serve_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault")
@@ -99,6 +104,10 @@ def main():
             print("Detected Broken Links:")
             for b in report['broken_links']:
                 print(f"  - In {b['file']}: [[{b['broken_target']}]]")
+
+    elif args.command == "dashboard":
+        from synapse4d.dashboard import run_dashboard
+        run_dashboard(vault_path=args.vault, port=args.port)
 
     elif args.command == "serve":
         from synapse4d.mcp_server import run_server
