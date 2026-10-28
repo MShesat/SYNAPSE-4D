@@ -5,6 +5,7 @@ Idempotent Migration Engine for Synapse 4D (v1.0 JSON -> v2.0 SQLite).
 from __future__ import annotations
 import json
 import time
+import uuid
 import shutil
 from pathlib import Path
 from typing import Dict, Any
@@ -45,7 +46,7 @@ class VaultMigrator:
 
         edges_migrated = 0
         facts_migrated = 0
-        session_id = f"sess_migrate_{timestamp}_{time.time_ns() % 1000000:06d}"
+        session_id = f"sess_migrate_{uuid.uuid4().hex[:10]}"
 
         if legacy_lattice.exists():
             try:
@@ -70,7 +71,7 @@ class VaultMigrator:
 
                 # Migrate facts if present in legacy
                 for fact_text in data.get("facts", []):
-                    f_id = f"f_mig_{time.time_ns()}"
+                    f_id = f"f_mig_{uuid.uuid4().hex[:12]}"
                     fact_rec = FactRecord(
                         id=f_id,
                         entity="migracion",
