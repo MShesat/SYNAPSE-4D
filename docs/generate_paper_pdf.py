@@ -1,8 +1,21 @@
 import os
-import sys
+import re
+from markdown_it import MarkdownIt
 from playwright.sync_api import sync_playwright
 
-html_content = """<!DOCTYPE html>
+docs_dir = r"C:\Users\ANGEL RUIZ\.gemini\antigravity\scratch\synapse-4d\docs"
+md_path = os.path.join(docs_dir, "WHITE_PAPER.md")
+html_path = os.path.join(docs_dir, "WHITE_PAPER.html")
+pdf_path = os.path.join(docs_dir, "WHITE_PAPER.pdf")
+
+with open(md_path, "r", encoding="utf-8") as f:
+    md_content = f.read()
+
+# Convert Markdown to HTML
+md = MarkdownIt("commonmark", {"html": True}).enable("table")
+body_html = md.render(md_content)
+
+full_html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -10,368 +23,169 @@ html_content = """<!DOCTYPE html>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"
-    onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '$', right: '$', display: false}]});"></script>
+    onload="renderMathInElement(document.body, {{delimiters: [{{left: '$$', right: '$$', display: true}}, {{left: '$', right: '$', display: false}}]}});">
+</script>
 <style>
-  @page {
+  @page {{
     size: letter;
-    margin: 20mm 18mm 22mm 18mm;
-    @top-center {
-      content: "Synapse 4D: Multi-Dimensional Cognitive State Matrix — Defensive Publication";
+    margin: 22mm 18mm 22mm 18mm;
+    @top-center {{
+      content: "Synapse 4D: Multi-Dimensional Cognitive State Matrix — Defensive Prior Art Publication";
       font-size: 8pt;
       font-family: 'Times New Roman', serif;
-      color: #666;
-      border-bottom: 0.5pt solid #ddd;
+      color: #555;
+      border-bottom: 0.5pt solid #ccc;
       padding-bottom: 4px;
-    }
-    @bottom-center {
+    }}
+    @bottom-center {{
       content: "Ángel Ruiz (@MShesat) • Prior Art Specification • Page " counter(page);
       font-size: 8pt;
       font-family: 'Times New Roman', serif;
-      color: #666;
-      border-top: 0.5pt solid #ddd;
+      color: #555;
+      border-top: 0.5pt solid #ccc;
       padding-top: 4px;
-    }
-  }
+    }}
+  }}
 
-  body {
+  body {{
     font-family: 'Times New Roman', 'Liberation Serif', serif;
     font-size: 10pt;
-    line-height: 1.45;
+    line-height: 1.5;
     color: #111;
     margin: 0;
     padding: 0;
     text-align: justify;
-  }
+  }}
 
-  .title-header {
+  h1 {{
+    font-size: 18pt;
+    font-weight: bold;
     text-align: center;
-    margin-bottom: 18pt;
-    border-bottom: 1.5pt solid #222;
-    padding-bottom: 14pt;
-  }
-
-  h1.paper-title {
-    font-size: 17pt;
-    font-weight: bold;
-    margin: 0 0 10pt 0;
     line-height: 1.25;
-    text-transform: none;
-    letter-spacing: -0.2pt;
-  }
+    margin-top: 0;
+    margin-bottom: 12pt;
+    letter-spacing: -0.3pt;
+  }}
 
-  .author-block {
-    font-size: 11pt;
-    font-weight: bold;
-    margin-bottom: 4pt;
-  }
-
-  .affiliation-block {
-    font-size: 9pt;
-    color: #333;
-    margin-bottom: 6pt;
-  }
-
-  .metadata-badge-bar {
-    margin-top: 6pt;
-    display: inline-block;
-    padding: 3pt 8pt;
-    background: #f4f4f6;
-    border: 0.5pt solid #ccc;
-    font-size: 8pt;
-    font-family: monospace;
-    border-radius: 3pt;
-  }
-
-  .abstract-box {
-    margin: 0 15pt 16pt 15pt;
-    padding: 8pt 12pt;
-    background-color: #fafafa;
-    border-left: 2.5pt solid #1a365d;
-    font-size: 9pt;
-  }
-
-  .abstract-title {
-    font-weight: bold;
-    text-transform: uppercase;
-    font-size: 8.5pt;
-    letter-spacing: 0.5pt;
-    margin-bottom: 4pt;
-    color: #1a365d;
-  }
-
-  .index-terms {
-    margin-top: 6pt;
-    font-style: italic;
-    font-size: 8.5pt;
-  }
-
-  h2 {
+  h2 {{
     font-size: 12pt;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.4pt;
-    margin-top: 16pt;
-    margin-bottom: 6pt;
-    border-bottom: 0.5pt solid #333;
+    margin-top: 20pt;
+    margin-bottom: 8pt;
+    border-bottom: 0.75pt solid #222;
     padding-bottom: 2pt;
-  }
+    page-break-after: avoid;
+  }}
 
-  h3 {
+  h3 {{
     font-size: 10.5pt;
     font-weight: bold;
-    margin-top: 10pt;
+    margin-top: 14pt;
     margin-bottom: 4pt;
-  }
+    page-break-after: avoid;
+  }}
 
-  p {
+  h4 {{
+    font-size: 10pt;
+    font-weight: bold;
+    font-style: italic;
+    margin-top: 10pt;
+    margin-bottom: 2pt;
+    page-break-after: avoid;
+  }}
+
+  p {{
     margin: 0 0 8pt 0;
     text-indent: 14pt;
-  }
+  }}
 
-  p.no-indent {
+  p:first-of-type, h1 + p, h2 + p, h3 + p, h4 + p, hr + p, blockquote + p {{
     text-indent: 0;
-  }
+  }}
 
-  ul, ol {
-    margin: 0 0 8pt 18pt;
+  ul, ol {{
+    margin: 0 0 10pt 18pt;
     padding: 0;
-  }
+  }}
 
-  li {
+  li {{
     margin-bottom: 3pt;
-  }
+  }}
 
-  table {
+  blockquote {{
+    margin: 10pt 16pt;
+    padding: 8pt 12pt;
+    background-color: #f8f9fa;
+    border-left: 2.5pt solid #2c3e50;
+    font-size: 9.5pt;
+  }}
+
+  pre {{
+    background: #fdfdfd;
+    border: 0.5pt solid #bbb;
+    padding: 8pt 10pt;
+    margin: 10pt 0;
+    font-family: 'Courier New', monospace;
+    font-size: 7.5pt;
+    line-height: 1.2;
+    overflow-x: auto;
+    page-break-inside: avoid;
+  }}
+
+  code {{
+    font-family: 'Courier New', monospace;
+    font-size: 8.5pt;
+    background: #f4f4f4;
+    padding: 1pt 3pt;
+    border-radius: 2pt;
+  }}
+
+  table {{
     width: 100%;
     border-collapse: collapse;
-    margin: 10pt 0 14pt 0;
+    margin: 12pt 0 16pt 0;
     font-size: 8.5pt;
-  }
+    page-break-inside: avoid;
+  }}
 
-  th {
+  th {{
     border-top: 1.5pt solid #222;
     border-bottom: 1pt solid #222;
     padding: 5pt 4pt;
     text-align: left;
     font-weight: bold;
-  }
+  }}
 
-  td {
+  td {{
     border-bottom: 0.5pt solid #ddd;
     padding: 4pt;
-  }
+  }}
 
-  tr:last-child td {
+  tr:last-child td {{
     border-bottom: 1.5pt solid #222;
-  }
+  }}
 
-  .diagram-container {
-    background: #fdfdfd;
-    border: 0.5pt solid #bbb;
-    padding: 8pt;
-    margin: 10pt 0;
-    font-family: 'Courier New', monospace;
-    font-size: 7.5pt;
-    line-height: 1.15;
-    white-space: pre;
-    overflow-x: auto;
-  }
+  hr {{
+    border: none;
+    border-top: 0.5pt solid #ccc;
+    margin: 16pt 0;
+  }}
 
-  .claim-box {
-    background: #fbfbfb;
-    border: 0.5pt solid #c5c5c5;
-    padding: 10pt 12pt;
-    margin: 10pt 0;
-    font-size: 9pt;
-  }
-
-  .claim-item {
-    margin-bottom: 8pt;
-  }
-
-  .bibtex-box {
-    background: #f5f5f5;
-    border: 0.5pt solid #ccc;
-    padding: 6pt 10pt;
-    font-family: monospace;
-    font-size: 8pt;
-    white-space: pre-wrap;
-    margin-top: 6pt;
-  }
+  .katex-display {{
+    margin: 8pt 0 !important;
+  }}
 </style>
 </head>
 <body>
-
-<div class="title-header">
-  <h1 class="paper-title">Synapse 4D: A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for Autonomous Language Agents</h1>
-  <div class="author-block">Ángel Ruiz (@MShesat)</div>
-  <div class="affiliation-block">Independent Research Lab • Open Source Defensive Initiative</div>
-  <div class="metadata-badge-bar">
-    Classification: cs.AI | cs.MA | cs.IR &nbsp;&bull;&nbsp; Standard: Defensive Publication & Prior Art Establishment &nbsp;&bull;&nbsp; Date: October 2026
-  </div>
-</div>
-
-<div class="abstract-box">
-  <div class="abstract-title">Abstract</div>
-  Large Language Models (LLMs) deployed as autonomous agents suffer from inherent context degradation, epistemic drift, and computational non-scalability ($O(N^2)$ attention overhead) over extended execution horizons. Conventional Retrieval-Augmented Generation (RAG) paradigms provide only static, flat vector proximity without bi-temporal awareness or conflict arbitration, leading to acute hallucinations when past observations contradict present system constraints. We introduce <strong>Synapse 4D</strong>, a deterministic, local-first multi-dimensional cognitive state machine formulated as a 4-tuple manifold:
-  $$\mathcal{S} = \langle \mathcal{D}_1, \mathcal{D}_2, \mathcal{D}_3, \mathcal{D}_4 \rangle$$
-  where $\mathcal{D}_1$ (Focus Engine) governs volatile working attention budgets and self-editing scratchpad paging; $\mathcal{D}_2$ (Fact Distiller) performs lossless atomic epistemic extraction under a strict Truth Hierarchy lattice; $\mathcal{D}_3$ (Chronos Lattice) tracks bi-temporal intervals ($t_{\\text{valid}}, t_{\\text{transaction}}$) with Hebbian synaptic plasticity and continuous exponential temporal decay; and $\mathcal{D}_4$ (Associative Mesh) enforces a topological hypergraph with reciprocal bidirectional homology, mathematically guaranteeing zero graph fragmentation (zero orphan nodes). We demonstrate that Synapse 4D operates with sub-second consolidation latency ($< 1.8\\text{s}$ for $10^4$ tokens), achieves 100% link integrity on real-world knowledge graphs, and maintains deterministic multi-day context continuity without token inflation.
-  <div class="index-terms"><strong>Index Terms:</strong> Cognitive State Matrix, Hebbian Plasticity, Bi-Temporal Graphs, Autonomous Agents, Defensive Publication, Prior Art.</div>
-</div>
-
-<h2>1. Introduction & Problem Formulation</h2>
-<p>In an autoregressive transformer generating tokens according to $P(y_t \mid y_{<t}, \mathbf{x}) = \text{Softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}}\right)\mathbf{V}$, the context window $\mathbf{x} \in \mathbb{R}^{L \times d}$ is finite. As interaction length $L \to \infty$, two acute failure modes inevitably manifest:</p>
-<ol>
-  <li><strong>Epistemic Context Rot:</strong> Historical user interactions contain superseded assumptions (e.g., legacy software versions, abandoned design choices). Unstructured accumulation leads to attention competition and hallucinated state recall.</li>
-  <li><strong>Topological Fragmentation:</strong> When agents save memories to isolated flat vector databases, relational dependencies between concepts are erased. Retrieval yields isolated fragments devoid of structural context.</li>
-</ol>
-
-<h3>1.1 Inadequacy of PARA for Machine Cognition</h3>
-<p>The human-centric PARA method (Projects, Areas, Resources, Archive) partitions data by subjective delivery deadlines rather than cognitive mutability. When an autonomous agent queries a "Project" directory under PARA, it processes volatile scratchpad thoughts concurrently with immutable architectural axioms, incurring severe attention dilution and non-deterministic behavior.</p>
-
-<h2>2. Mathematical Architecture of Synapse 4D</h2>
-<p>The cognitive state of the agent at time $t$ is formulated as the quadruple:</p>
-$$\mathcal{S}(t) = \langle \mathcal{D}_1(t), \mathcal{D}_2(t), \mathcal{D}_3(t), \mathcal{D}_4(t) \rangle$$
-
-<div class="diagram-container">
-                                  ┌─────────────────────────────┐
-                                  │   AGENT REASONING CYCLE     │
-                                  └──────────────┬──────────────┘
-                                                 │
-                        ┌────────────────────────┴────────────────────────┐
-                        ▼                                                 ▼
-        ┌───────────────────────────────┐                 ┌───────────────────────────────┐
-        │  DIMENSION 1: FOCUS ENGINE    │                 │ DIMENSION 2: FACT DISTILLER   │
-        │      Dynamic Context Buffer   │                 │     Truth Hierarchy Lattice   │
-        │    Budget: B_tokens <= K      │                 │  Axiom > Preference > Observ. │
-        └───────────────┬───────────────┘                 └───────────────┬───────────────┘
-                        │                                                 │
-                        └────────────────────────┬────────────────────────┘
-                                                 │
-                        ┌────────────────────────┴────────────────────────┐
-                        ▼                                                 ▼
-        ┌───────────────────────────────┐                 ┌───────────────────────────────┐
-        │  DIMENSION 3: CHRONOS LATTICE │                 │ DIMENSION 4: ASSOCIATIVE MESH │
-        │     Bi-Temporal Coordinates   │                 │     Topological Hypergraph    │
-        │   Hebbian Synaptic Decay      │                 │    Zero-Orphan Reciprocity    │
-        └───────────────┬───────────────┘                 └───────────────┬───────────────┘
-                        │                                                 │
-                        └────────────────────────┬────────────────────────┘
-                                                 │
-                                                 ▼
-                                  ┌─────────────────────────────┐
-                                  │    UNIVERSAL STORAGE        │
-                                  │ (Markdown / SQLite Database)│
-                                  └─────────────────────────────┘
-</div>
-
-<h3>2.1 Dimension 1: Focus Engine ($\mathcal{D}_1$)</h3>
-<p>$\mathcal{D}_1$ provides deterministic working memory management within an invariant token bound $B \le K_{\text{budget}}$. Let $\mathcal{M}_{\text{active}}$ be the active scratchpad partitioned into semantically labeled registers $\{R_1, R_2, \dots, R_m\}$. A mutation operator $\Phi: \mathcal{M} \times \Delta \to \mathcal{M}'$ updates targeted registers in $O(1)$ without perturbing unaddressed registers, eliminating context blowout.</p>
-
-<h3>2.2 Dimension 2: Fact Distiller ($\mathcal{D}_2$) & Truth Hierarchy</h3>
-<p>$\mathcal{D}_2$ projects unstructured interaction streams into discrete atomic assertions $\alpha = \langle \text{subject}, \text{predicate}, \text{object} \rangle$. Each assertion is endowed with an epistemic authority weight $w_{\text{auth}} \in (0, 1]$ drawn from a strictly ordered poset (Partially Ordered Set):</p>
-$$\mathcal{T}_{\text{truth}} = \langle \{\text{Axiom}, \text{Preference}, \text{Observation}\}, \succ \rangle$$
-$$\text{Axiom} \ (1.0) \succ \text{Preference} \ (0.8) \succ \text{Observation} \ (0.5)$$
-
-<p class="no-indent"><strong>Arbitration Theorem:</strong> Given an incoming proposition $\alpha_{\text{new}}$ and an existing proposition $\alpha_{\text{old}}$ with semantic similarity $\text{Sim}(\alpha_{\text{new}}, \alpha_{\text{old}}) > \theta$:</p>
-$$\text{Action}(\alpha_{\text{new}}) = 
-\begin{cases} 
-\text{Reject} & \text{if } w_{\text{auth}}(\alpha_{\text{new}}) < w_{\text{auth}}(\alpha_{\text{old}}) \\
-\text{Supersede} & \text{if } w_{\text{auth}}(\alpha_{\text{new}}) \ge w_{\text{auth}}(\alpha_{\text{old}}) \land \text{Conflict}(\alpha_{\text{new}}, \alpha_{\text{old}}) \\
-\text{NoOp} & \text{if } \text{Sim}(\alpha_{\text{new}}, \alpha_{\text{old}}) \ge 0.85
-\end{cases}$$
-
-<h3>2.3 Dimension 3: Chronos Lattice ($\mathcal{D}_3$) & Hebbian Plasticity</h3>
-<p>The Chronos Lattice models relational edges as bi-temporal entities $E = \langle u, v, r, t_v, t_{inv}, w_{syn} \rangle$, where $t_v$ is valid time, $t_{inv}$ is invalidation timestamp, and $w_{syn} \in \mathbb{R}^+$ is synaptic weight.</p>
-<p class="no-indent"><strong>Hebbian Plasticity & Decay:</strong> When an edge is traversed during retrieval, its synaptic weight undergoes Long-Term Potentiation (LTP):</p>
-$$w_{syn}(t^+) = \min\left(w_{syn}(t) + \eta_{\text{hebb}}, \ w_{\max}\right)$$
-<p class="no-indent">In the absence of reinforcement, synaptic weights follow an exponential temporal decay over elapsed intervals $\Delta t$:</p>
-$$w_{eff}(t) = w_{syn} \cdot \exp\left(-\lambda_{\text{decay}} \Delta t\right)$$
-
-<h3>2.4 Dimension 4: Associative Mesh ($\mathcal{D}_4$) & Zero-Orphan Invariant</h3>
-<p>$\mathcal{D}_4$ constructs a topological hypergraph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ where each vertex represents an atomic Zettelkasten knowledge unit. For every directed link $e_{ij} = (v_i \to v_j)$ generated within the body or frontmatter of node $v_i$, the system enforces a topological closure operator $\partial$:</p>
-$$\forall v_i, v_j \in \mathcal{V}: (v_i \to v_j) \implies (v_j \to v_i) \in \mathcal{E}$$
-<p class="no-indent"><strong>Corollary:</strong> The graph possesses an orphan node count $|\mathcal{V}_{\text{isolated}}| = 0$ for all valid states of $\mathcal{G}$, mathematically precluding graph entropy.</p>
-
-<h2>3. Formal Patent Claims (Defensive Specification)</h2>
-<div class="claim-box">
-  <div class="claim-item"><strong>Claim 1 (Independent Method):</strong> A computer-implemented method for autonomous agent memory management, comprising: maintaining a 4-dimensional state space encompassing an active attention buffer ($\mathcal{D}_1$), an atomic fact distillation pipeline ($\mathcal{D}_2$), a bi-temporal relational lattice ($\mathcal{D}_3$), and an associative topological hypergraph ($\mathcal{D}_4$); distilling incoming conversational turns into discrete atomic declarative propositions; and arbitrating semantic contradictions using a hierarchical truth authority lattice wherein system axioms deterministically prevail over user observations.</div>
-  <div class="claim-item"><strong>Claim 2:</strong> The method of claim 1, wherein the bi-temporal relational lattice ($\mathcal{D}_3$) updates edge validity by recording an invalidation timestamp ($t_{inv}$) upon conflict detection without destructive deletion of historical state trajectories.</div>
-  <div class="claim-item"><strong>Claim 3:</strong> The method of claim 1, wherein relational edges in the lattice possess dynamic synaptic weights ($w_{syn}$) that potentiate upon retrieval and decay exponentially according to $w(t) = w_0 e^{-\lambda \Delta t}$ during periods of non-activation.</div>
-  <div class="claim-item"><strong>Claim 4:</strong> The method of claim 1, wherein the associative topological hypergraph ($\mathcal{D}_4$) enforces reciprocal bidirectional bindings across knowledge nodes, ensuring a zero-orphan topological invariant across the entire knowledge base.</div>
-  <div class="claim-item"><strong>Claim 5 (System Architecture):</strong> A system for universal agent cognitive state persistence, comprising an interface implementing the Model Context Protocol (MCP) to expose working memory, associative search, and consolidation endpoints to client language models; and an agnostic storage driver supporting interchangeable persistence across local Markdown hierarchies and single-file relational SQLite databases.</div>
-</div>
-
-<h2>4. Empirical Complexity & Performance Analysis</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Subsystem / Operation</th>
-      <th>Algorithmic Complexity</th>
-      <th>Synapse 4D Measured Latency</th>
-      <th>Baseline (Flat Vector RAG)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>$\mathcal{D}_1$ Context Register Replacement</td>
-      <td>$O(1)$</td>
-      <td><strong>0.8 ms</strong></td>
-      <td>$O(N)$ Context Re-read</td>
-    </tr>
-    <tr>
-      <td>$\mathcal{D}_2$ Fact Extraction & Arbitration</td>
-      <td>$O(F \cdot K)$</td>
-      <td><strong>12.4 ms</strong></td>
-      <td>LLM Ingestion Latency</td>
-    </tr>
-    <tr>
-      <td>$\mathcal{D}_3$ Temporal Edge Invalidation</td>
-      <td>$O(|E|)$</td>
-      <td><strong>1.2 ms</strong></td>
-      <td>Not Supported (Overwritten)</td>
-    </tr>
-    <tr>
-      <td>$\mathcal{D}_4$ Reciprocal Link Synthesis</td>
-      <td>$O(|\text{Adj}|)$</td>
-      <td><strong>3.1 ms</strong></td>
-      <td>$O(0)$ (Orphans Permitted)</td>
-    </tr>
-    <tr>
-      <td>Full 4D Autonomous Consolidation</td>
-      <td>$O(N)$ amortized</td>
-      <td><strong>⚡ 1.62 s</strong></td>
-      <td>&gt; 8.5 s (Multi-Agent Rerank)</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2>5. Prior Art Distinction & Conclusion</h2>
-<p>Unlike conventional vector databases that are blind to temporal changes and lack self-editing capabilities, and unlike enterprise Graph RAGs requiring heavy database infrastructure, <strong>Synapse 4D</strong> is the first unified state machine to establish direct convergence between human cognitive psychology models (CoALA / Working-Episodic-Semantic memory), Hebbian neuro-computational dynamics, and local-first Zettelkasten topologies.</p>
-
-<p><em>Published defensively by Ángel Ruiz (@MShesat) — October 2026. All mathematical, structural, and computational specifications disclosed herein serve as public, defensible prior art establishing incontestable inventorship.</em></p>
-
-<h2>Citation & Bibliographic Reference</h2>
-<div class="bibtex-box">@article{ruiz2026synapse4d,
-  title={Synapse 4D: A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for Autonomous Language Agents},
-  author={Ruiz, Ángel (@MShesat)},
-  year={2026},
-  month={October},
-  publisher={GitHub / Open Science},
-  journal={Defensive Research Publication & Formal Patent Disclosure},
-  url={https://github.com/MShesat/SYNAPSE-4D}
-}</div>
-
+{body_html}
 </body>
 </html>
 """
 
-docs_dir = r"C:\Users\ANGEL RUIZ\.gemini\antigravity\scratch\synapse-4d\docs"
-html_path = os.path.join(docs_dir, "WHITE_PAPER.html")
-pdf_path = os.path.join(docs_dir, "WHITE_PAPER.pdf")
-
 with open(html_path, "w", encoding="utf-8") as f:
-    f.write(html_content)
+    f.write(full_html)
 
 print(f"HTML written to {html_path}")
 
@@ -379,12 +193,12 @@ with sync_playwright() as p:
     browser = p.chromium.launch()
     page = browser.new_page()
     page.goto(f"file:///{html_path.replace(os.sep, '/')}")
-    page.wait_for_timeout(2500) # Wait for KaTeX to finish rendering
+    page.wait_for_timeout(3000) # Wait for KaTeX to finish rendering formulas
     page.pdf(
         path=pdf_path,
         format="Letter",
         print_background=True,
-        margin={"top": "18mm", "bottom": "18mm", "left": "16mm", "right": "16mm"}
+        margin={"top": "22mm", "bottom": "22mm", "left": "18mm", "right": "18mm"}
     )
     browser.close()
 
