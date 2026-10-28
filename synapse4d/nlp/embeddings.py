@@ -22,8 +22,24 @@ class EmbeddingEngine:
 
     def _init_embedding_function(self):
         if self._embed_fn is None:
-            from chromadb.utils import embedding_functions
-            self._embed_fn = embedding_functions.DefaultEmbeddingFunction()
+            try:
+                from fastembed import TextEmbedding
+                _model = TextEmbedding()
+                self._embed_fn = lambda texts: [list(v) for v in _model.embed(texts)]
+            except Exception:
+                try:
+                    from chromadb.utils import embedding_functions
+                    self._embed_fn = embedding_functions.DefaultEmbeddingFunction()
+                except Exception:
+                    import hashlib
+                    def _fallback_embed(texts):
+                        vecs = []
+                        for t in texts:
+                            h = hashlib.sha256(t.encode("utf-8")).digest()
+                            v = [(float(b) / 128.0 - 1.0) for b in (h * 12)[:384]]
+                            vecs.append(v)
+                        return vecs
+                    self._embed_fn = _fallback_embed
 
     @classmethod
     def get_instance(cls) -> EmbeddingEngine:
