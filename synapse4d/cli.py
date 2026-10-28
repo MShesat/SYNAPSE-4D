@@ -1,6 +1,6 @@
 """
-Synapse 4D - CLI Interface
-Commands: init, consolidate, search, audit, serve.
+Synapse 4D - CLI Interface (v2.5)
+Commands: init, consolidate, search, audit, undo, review, migrate, serve, dashboard.
 """
 
 import argparse
@@ -10,43 +10,61 @@ import shutil
 from pathlib import Path
 from synapse4d import __version__
 from synapse4d.core import SynapseEngine
+from synapse4d.storage.migration import VaultMigrator
+
 
 def main():
     parser = argparse.ArgumentParser(
         prog="synapse4d",
-        description=f"Synapse 4D (v{__version__}) - SOTA Quad-Hybrid Memory Engine for AI Agents & Obsidian"
+        description=f"Synapse 4D (v{__version__}) - Arquitectura de Memoria Persistente 4D para Agentes de IA y Obsidian"
     )
     parser.add_argument("--version", action="version", version=f"synapse4d {__version__}")
 
-    subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
+    subparsers = parser.add_subparsers(dest="command", help="Comandos disponibles")
 
     # init
-    init_parser = subparsers.add_parser("init", help="Initialize a new Synapse 4D cognitive vault")
-    init_parser.add_argument("path", help="Target directory for the new cognitive vault")
+    init_parser = subparsers.add_parser("init", help="Inicializar una nueva bóveda cognitiva CoALA")
+    init_parser.add_argument("path", help="Directorio destino para la bóveda cognitiva")
 
     # consolidate
-    cons_parser = subparsers.add_parser("consolidate", help="Run the 4D consolidation cycle")
-    cons_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault (default: current dir)")
-    cons_parser.add_argument("--all", action="store_true", help="Process all episodic logs, not just recent ones")
+    cons_parser = subparsers.add_parser("consolidate", help="Ejecutar ciclo de consolidación 4D")
+    cons_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian (default: directorio actual)")
+    cons_parser.add_argument("--all", action="store_true", help="Procesar todas las bitácoras episódicas, no solo las recientes")
 
     # search
-    search_parser = subparsers.add_parser("search", help="Semantic & temporal hybrid memory search")
-    search_parser.add_argument("query", help="Query string")
-    search_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault")
-    search_parser.add_argument("--limit", "-n", type=int, default=5, help="Number of results")
+    search_parser = subparsers.add_parser("search", help="Búsqueda híbrida semántica y temporal")
+    search_parser.add_argument("query", help="Texto o concepto a buscar")
+    search_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian")
+    search_parser.add_argument("--limit", "-n", type=int, default=5, help="Número de resultados")
 
     # audit
-    audit_parser = subparsers.add_parser("audit", help="Audit cognitive vault health, links, and orphans")
-    audit_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault")
+    audit_parser = subparsers.add_parser("audit", help="Auditar salud de la bóveda, enlaces rotos y hechos pendientes")
+    audit_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian")
 
-    # dashboard (Master HUD)
-    dash_parser = subparsers.add_parser("dashboard", help="Launch the Master Cognitive Web HUD (Pro Owner Edition)")
-    dash_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault")
-    dash_parser.add_argument("--port", "-p", type=int, default=5000, help="Web port (default: 5000)")
+    # undo
+    undo_parser = subparsers.add_parser("undo", help="Revertir de forma determinista una sesión de consolidación previa")
+    undo_parser.add_argument("session_id", help="ID de la sesión de consolidación a revertir")
+    undo_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian")
+
+    # review
+    review_parser = subparsers.add_parser("review", help="Auditar, promover o descartar hechos provisionales")
+    review_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian")
+    review_parser.add_argument("--promote", help="ID del hecho provisional a promover a axioma activo")
+    review_parser.add_argument("--demote", help="ID del hecho a degradar o invalidar")
+
+    # migrate
+    migrate_parser = subparsers.add_parser("migrate", help="Migrar bóveda legacy v1.0 a esquema relacional SQLite v2.0")
+    migrate_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian")
+    migrate_parser.add_argument("--no-backup", action="store_true", help="Omitir respaldo automático preventivo")
+
+    # dashboard (Open Core notice)
+    dash_parser = subparsers.add_parser("dashboard", help="Lanzar el Master Cognitive HUD (Pro Edition)")
+    dash_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian")
+    dash_parser.add_argument("--port", "-p", type=int, default=5000, help="Puerto web (default: 5000)")
 
     # serve (MCP Server)
-    serve_parser = subparsers.add_parser("serve", help="Start the Synapse 4D MCP Server for Cursor/Claude/Antigravity")
-    serve_parser.add_argument("--vault", "-v", default=".", help="Path to the Obsidian vault")
+    serve_parser = subparsers.add_parser("serve", help="Iniciar el servidor MCP de Synapse 4D para Antigravity/Cursor/Claude")
+    serve_parser.add_argument("--vault", "-v", default=".", help="Ruta a la bóveda de Obsidian")
 
     args = parser.parse_args()
 
@@ -66,52 +84,109 @@ def main():
                     shutil.copytree(item, dest, dirs_exist_ok=True)
                 else:
                     shutil.copy2(item, dest)
-            print(f"[OK] Cognitive vault initialized successfully at: {target}")
+            print(f"[OK] Bóveda cognitiva inicializada exitosamente en: {target}")
         else:
-            print(f"[ERROR] Template directory not found at {template_dir}")
+            print(f"[ERROR] Directorio de plantillas no encontrado en {template_dir}")
 
     elif args.command == "consolidate":
         engine = SynapseEngine(args.vault)
-        print(f"[Synapse 4D] Consolidating vault: {engine.vault_path}...")
+        print(f"[Synapse 4D] Consolidando bóveda: {engine.vault_path}...")
         res = engine.consolidate(recent_only=not args.all)
-        print(f"[OK] Streams processed: {res['processed_streams']}")
-        print(f"[OK] Facts distilled: {res['facts_distilled']} (+{res['facts_retained']} retained, ~{res['facts_superseded']} superseded, ={res['facts_redundant']} redundant skipped)")
+        print(f"[OK] Sesión: {res['session_id']}")
+        print(f"[OK] Bitácoras procesadas: {res['processed_streams']}")
+        print(f"[OK] Hechos destilados: {res['facts_distilled']} (+{res['facts_retained']} retenidos, ~{res['facts_superseded']} invalidados, ={res['facts_redundant']} redundantes)")
+        print(f"[OK] Stubs de clausura D4 creados: {res['stubs_created']}")
 
     elif args.command == "search":
         engine = SynapseEngine(args.vault)
-        res = engine.search(args.query, limit=args.limit)
-        print(f"\n[Synapse 4D Results for: '{args.query}']\n")
-        hits = res.get("vector_results", [])
-        if not hits:
-            print("No matching memories found.")
-        for i, hit in enumerate(hits, 1):
-            score = hit.get("score", 0.0)
-            meta = hit.get("metadata", {})
-            doc = hit.get("document", "").replace("\n", " ")[:150]
-            print(f"[{i}] (Relevance: {score * 100:.1f}%) Source: {meta.get('source', 'Unknown')}")
-            print(f"    Excerpt: {doc}...\n")
+        facts = engine.db.get_active_facts()
+        matches = [f for f in facts if args.query.lower() in f.value.lower() or args.query.lower() in f.entity.lower()]
+        print(f"\n[Synapse 4D - Resultados para: '{args.query}']\n")
+        if not matches:
+            print("No se encontraron hechos activos coincidentes.")
+        for i, hit in enumerate(matches[:args.limit], 1):
+            rev_tag = " [PENDIENTE DE REVISIÓN]" if hit.needs_review else ""
+            print(f"[{i}] ({hit.entity} -> {hit.attribute}): {hit.value}{rev_tag} (Conf: {hit.confidence})")
+        print()
 
     elif args.command == "audit":
         engine = SynapseEngine(args.vault)
         report = engine.audit()
-        print(f"\n=== Synapse 4D Vault Audit ===")
-        print(f"Vault: {report['vault_path']}")
-        print(f"Total Notes: {report['total_notes']}")
-        print(f"Total Wikilinks: {report['total_wikilinks']}")
-        print(f"Broken Links: {report['broken_links_count']}")
-        print(f"Health Score: {report['health_score']}\n")
-        if report['broken_links']:
-            print("Detected Broken Links:")
-            for b in report['broken_links']:
-                print(f"  - In {b['file']}: [[{b['broken_target']}]]")
+        print(f"\n=======================================================")
+        print(f"            SYNAPSE 4D - AUDITORÍA COGNITIVA           ")
+        print(f"=======================================================")
+        print(f"Bóveda: {report['vault_path']}")
+        print(f"Nodos totales: {report['total_nodes']}")
+        print(f"Hechos activos (SQLite): {report['active_facts_count']}")
+        print(f"Aristas activas (D4 Mesh): {report['active_edges_count']}")
+        print(f"Enlaces totales: {report['total_bindings']}")
+        print(f"Enlaces rotos: {report['broken_bindings_count']}")
+        print(f"Score de salud: {report['health_score']}")
+        print(f"Recuperación post-crash: {report['recovery_status']}")
+
+        if report["needs_review_alert"]:
+            print(f"\n[ALERTA ROJA] {report['needs_review_count']} hechos pendientes de revisión (>20).")
+            print("Ejecuta 'synapse4d review' para auditar o promover hechos provisionales.")
+        elif report["needs_review_count"] > 0:
+            print(f"\n[INFO] {report['needs_review_count']} hechos provisionales pendientes de revisión.")
+
+        if report["broken_bindings"]:
+            print("\nPrimeros enlaces rotos detectados:")
+            for b in report["broken_bindings"]:
+                print(f"  - {b['file']} -> [[{b['target']}]]")
+        print(f"=======================================================\n")
+
+    elif args.command == "undo":
+        engine = SynapseEngine(args.vault)
+        print(f"[Synapse 4D] Revirtiendo sesión: {args.session_id}...")
+        res = engine.undo(args.session_id)
+        print(f"[OK] Hechos restaurados: {res['facts_restored']}")
+        print(f"[OK] Hechos revocados: {res['facts_rolled_back']}")
+
+    elif args.command == "review":
+        engine = SynapseEngine(args.vault)
+        if args.promote:
+            engine.promote_fact(args.promote)
+            print(f"[OK] Hecho {args.promote} promovido a axioma activo con confianza 1.0.")
+        elif args.demote:
+            engine.demote_fact(args.demote)
+            print(f"[OK] Hecho {args.demote} invalidado/degradado.")
+        else:
+            pending = engine.review()
+            print(f"\n=== Hechos Pendientes de Revisión ({len(pending)}) ===")
+            if not pending:
+                print("Todos los hechos están consolidados y confirmados. Cero deuda técnica.")
+            for p in pending:
+                print(f"[{p['id']}] {p['entity']} -> {p['attribute']}: {p['value']} (Conf: {p['confidence']})")
+                print(f"       Para promover: synapse4d review --promote {p['id']}")
+            print()
+
+    elif args.command == "migrate":
+        migrator = VaultMigrator(args.vault)
+        print(f"[Synapse 4D] Iniciando migración a SQLite relacional en: {migrator.vault_path}...")
+        res = migrator.migrate(create_backup=not args.no_backup)
+        if res.get("success"):
+            print(f"[OK] Migración exitosa.")
+            print(f"     Sesión: {res['session_id']}")
+            print(f"     Aristas migradas: {res['edges_migrated']}")
+            print(f"     Hechos migrados: {res['facts_migrated']}")
+            if res.get("backup_path"):
+                print(f"     Copia de respaldo en: {res['backup_path']}")
+        else:
+            print(f"[ERROR] Error durante migración: {res.get('error')}")
 
     elif args.command == "dashboard":
-        from synapse4d.dashboard import run_dashboard
-        run_dashboard(vault_path=args.vault, port=args.port)
+        print("\n[Synapse 4D Open Core]")
+        print("El HUD interactivo 2D/3D es parte de Synapse 4D Pro Edition.")
+        print("Para lanzarlo con interfaz visual nativa y soporte para Obsidian:")
+        print("  1. Adquiere o activa Synapse 4D Pro Edition.")
+        print("  2. Ejecuta: synapse4d-pro --vault <ruta_boveda>")
+        print("  O consulta: https://github.com/MShesat/synapse-4d#pro-edition\n")
 
     elif args.command == "serve":
-        from synapse4d.mcp_server import run_server
-        run_server(args.vault)
+        from synapse4d.mcp_server import run_mcp_server
+        run_mcp_server(vault_path=args.vault)
+
 
 if __name__ == "__main__":
     main()

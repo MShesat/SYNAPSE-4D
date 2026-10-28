@@ -1,12 +1,12 @@
 # 🧠 Synapse 4D
 
 <p align="center">
-  <img src="./assets/synapse4d_logo.jpg" alt="Synapse 4D Logo" width="300">
+  <img src="./assets/synapse4d_logo.jpg" alt="Synapse 4D Logo" width="280">
 </p>
 
 <p align="center">
-  <b>A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for AI Agents & Human Knowledge.</b><br>
-  <i>Sub-second, local-first artificial cognition combining Working Attention, Atomic Distillation, Bi-Temporal Reality Tracking, and Zero-Orphan Associative Meshes.</i>
+  <b>A Multi-Dimensional Cognitive State Matrix with Bi-Temporal Tracking, Local-First Relational Engine, and Autonomous Topological Closure for AI Agents & Obsidian.</b><br>
+  <i>Sub-second, local-first artificial cognition combining Working Attention, Epistemic Arbitration, Bi-Temporal Reality Tracking, and Zero-Orphan Associative Meshes.</i>
 </p>
 
 <p align="center">
@@ -20,189 +20,133 @@
 
 ---
 
-## 📄 Formal Computer Science White Paper & Patent Disclosure
-
-Synapse 4D is formally specified as a mathematically rigorous cognitive state machine.  
-Read the full defensive patent specification, mathematical proofs, and asymptotic complexity analysis:  
-👉 **[Read the White Paper (cs.AI / cs.MA)](./docs/WHITE_PAPER.md)** &nbsp;|&nbsp; 📥 **[Download Academic PDF](./docs/WHITE_PAPER.pdf)**
-
----
-
-## 🌐 Synapse 4D Pro — 3D Holographic Neural Core HUD
-
-<p align="center">
-  <img src="./assets/3d_holographic_core_preview.png" alt="Synapse 4D — 3D Holographic Neural Core HUD" width="100%">
-</p>
-
-> **Synapse 4D Pro Edition** includes the full interactive **3D Holographic Neural Core Visualizer**, featuring a rotatable 3D double-helix Chronos spine, real-time 60Hz Gamma synaptic oscilloscope, live 4-stage cognitive processing waves, and portable single-file SQLite storage.
-
----
-
-## ⚡ The Fundamental Problem of AI Memory
+## ⚡ The Fundamental Problem of AI Agent Memory
 
 Autoregressive Language Models suffer from catastrophic **context degradation** ($O(N^2)$ attention overhead) and **epistemic drift**. Conventional Retrieval-Augmented Generation (RAG) paradigms provide only flat, static vector similarity:
-- **No Working Memory Control:** The LLM cannot dynamically edit its active scratchpad without re-reading thousands of tokens.
-- **Blindness to Contradictions:** When past session logs contradict present rules, flat vector search returns both, causing severe hallucinations.
-- **Topological Fragmentation:** Knowledge is stored in isolated chunks without reciprocal links, resulting in orphan data and fragmented graph retrieval.
+- **No Epistemic Conflict Arbitration:** When past session logs contradict present rules (*"use Postgres"* vs *"avoid Postgres"*), flat cosine similarity returns both because they share contextual tokens, leading to hallucinations.
+- **Physical Overwrite Corrupts History:** Overwriting files destroys the causal timeline. Agents cannot distinguish an intentional state transition from transient noise.
+- **Topological Fragmentation:** Knowledge is stored in isolated chunks without reciprocal links, resulting in orphan data and fragmented graph traversal.
 
 ---
 
-## 🔬 The Synapse 4D Architecture
+## 🔬 The Synapse 4D Architecture (v2.5)
 
 Synapse 4D formalizes artificial cognitive state as a 4-dimensional manifold:
 $$\mathcal{S} = \langle \mathcal{D}_1, \mathcal{D}_2, \mathcal{D}_3, \mathcal{D}_4 \rangle$$
 
-```
-                                  ┌─────────────────────────────┐
-                                  │   AGENT REASONING CYCLE     │
-                                  └──────────────┬──────────────┘
-                                                 │
-                        ┌────────────────────────┴────────────────────────┐
-                        ▼                                                 ▼
-        ┌───────────────────────────────┐                 ┌───────────────────────────────┐
-        │  DIMENSION 1: FOCUS ENGINE    │                 │ DIMENSION 2: FACT DISTILLER   │
-        │      Dynamic Context Buffer   │                 │     Truth Hierarchy Lattice   │
-        │  (Self-Editing Working Memory)│                 │  Axiom > Preference > Observ. │
-        └───────────────┬───────────────┘                 └───────────────┬───────────────┘
-                        │                                                 │
-                        └────────────────────────┬────────────────────────┘
-                                                 │
-                        ┌────────────────────────┴────────────────────────┐
-                        ▼                                                 ▼
-        ┌───────────────────────────────┐                 ┌───────────────────────────────┐
-        │  DIMENSION 3: CHRONOS LATTICE │                 │ DIMENSION 4: ASSOCIATIVE MESH │
-        │     Bi-Temporal Coordinates   │                 │     Topological Hypergraph    │
-        │   Hebbian Synaptic Decay      │                 │    Zero-Orphan Reciprocity    │
-        └───────────────┬───────────────┘                 └───────────────┬───────────────┘
-                        │                                                 │
-                        └────────────────────────┬────────────────────────┘
-                                                 │
-                                                 ▼
-                                  ┌─────────────────────────────┐
-                                  │    UNIVERSAL STORAGE        │
-                                  │ (Markdown / SQLite Database)│
-                                  └─────────────────────────────┘
+```mermaid
+flowchart TD
+    Episodic["10_Episodic_Memory<br>(Daily Session Logs)"] --> D2["D2: Fact Distiller<br>(Polarity + FastEmbed ONNX)"]
+    D2 -->|Logical Supersession| D3["D3: Chronos Relational Engine<br>(SQLite WAL + FileLock + UDF Lazy Decay)"]
+    D3 --> D4["D4: Associative Mesh<br>(Reciprocal Closure & Zero-Orphan Stubs)"]
+    D4 --> Focus["D1: Focus Engine<br>(Working Attention Scratchpad)"]
+    D3 -.-> Journal["Atomic 2PC Journal<br>(pending_writes.json + Physical Backups)"]
 ```
 
-### The 4 Core Dimensions:
-
-1. **Dimension 1: Focus Engine ($\mathcal{D}_1$):** Governs volatile working memory, registers active objectives, enforces strict token budgets, and provides $O(1)$ scratchpad register mutation.
-2. **Dimension 2: Fact Distiller ($\mathcal{D}_2$):** Decomposes conversational streams into atomic declarative propositions and applies a strict **Truth Hierarchy** ($\text{Axioms} \succ \text{Preferences} \succ \text{Observations}$) to resolve semantic conflicts deterministically.
-3. **Dimension 3: Chronos Lattice ($\mathcal{D}_3$):** Bi-temporal knowledge graph ($t_{\text{valid}}, t_{\text{invalidated}}$) featuring **Hebbian Synaptic Plasticity** ($\Delta w_{ij} = \eta \cdot \text{retrieval}$) and continuous exponential temporal decay ($w(t) = w_0 e^{-\lambda \Delta t}$).
-4. **Dimension 4: Associative Mesh ($\mathcal{D}_4$):** Enforces topological closure on knowledge nodes with guaranteed bidirectional reciprocal bindings (`[[Wikilinks]]`), mathematically ensuring **0 orphan nodes**.
+### Core Dimensions
+1. **$\mathcal{D}_1$ — Focus Engine (Dynamic Working Attention):** RAM buffer with asynchronous write-behind to Markdown, fixed token quota guards, and immediate scratchpad editing.
+2. **$\mathcal{D}_2$ — Fact Distiller (Epistemic Truth Hierarchy):** Multi-tiered extraction (LLM Tool Calling $\to$ pure regex/morpheme fallback). Logical supersession (`status = 'superseded'`) replacing destructive physical deletes. Composite similarity (local ONNX vector + lexical polarity & antonym opposition).
+3. **$\mathcal{D}_3$ — Relational Chronos Storage:** SQLite in WAL mode with process-level filelock. Bi-temporal attributes (`valid_from`, `valid_to`, `invalidated_at`, `superseded_by`). Zero-write-amplification Hebbian decay via SQLite User-Defined Functions evaluated at query time.
+4. **$\mathcal{D}_4$ — Associative Mesh (Topological Hypergraph):** Enforces reciprocal edge closure ($A \to B \iff B \to A$) and guarantees $|V_{\text{isolated}}| = 0$ by generating minimal associative stubs with backlink provenance.
 
 ---
 
-## 🏆 Benchmark & Feature Comparison
+## 📦 Open Core Model: MIT vs Pro Edition
 
-| Feature / Metric | Conventional Vector RAG | Graph RAG Frameworks | Flat Fact Buffers | **Synapse 4D** |
-|---|:---:|:---:|:---:|:---:|
-| **Self-Editing Working Attention ($\mathcal{D}_1$)** | ❌ | ❌ | Partial | **✅ Built-in ($O(1)$)** |
-| **Deterministic Truth Hierarchy ($\mathcal{D}_2$)** | ❌ | ❌ | ❌ | **✅ Built-in** |
-| **Bi-Temporal Edge Invalidation ($\mathcal{D}_3$)** | ❌ | Partial | ❌ | **✅ Built-in** |
-| **Hebbian Plasticity & Decay ($\mathcal{D}_3$)** | ❌ | ❌ | ❌ | **✅ Built-in** |
-| **Zero-Orphan Topological Invariant ($\mathcal{D}_4$)** | ❌ | ❌ | ❌ | **✅ Guaranteed** |
-| **Local-First & Storage Agnostic** | ❌ (Cloud) | ❌ (Heavy DB) | Partial | **✅ Zero-Config (MD / SQLite)** |
-| **Consolidation Latency ($10^4$ tokens)** | $> 8.5\text{s}$ | $> 5.2\text{s}$ | $> 3.8\text{s}$ | **⚡ < 1.7\text{s}** |
+Synapse 4D follows a clean Open-Core architecture:
+
+| Capability | Open Core (MIT) | Pro Edition |
+| :--- | :---: | :---: |
+| **D1–D4 Engines** (Focus, Distiller, Chronos SQLite, Mesh) | ✅ Full | ✅ Full |
+| **CLI & Automation** (`init`, `consolidate`, `search`, `undo`, `review`, `migrate`) | ✅ Full | ✅ Full |
+| **Native MCP Server** (JSON-RPC 2.0 for Cursor, Claude, Antigravity) | ✅ Full | ✅ Full |
+| **Two-Phase Commit Journal** (`pending_writes.json` + crash recovery) | ✅ Full | ✅ Full |
+| **Interactive HUD / Canvas Visualizer** (2D/3D Graph HUD) | ❌ | ✅ Included |
+| **Zero-Terminal Obsidian Plugin** (1-click BRAT install & visual status bar) | ❌ | ✅ Included |
+| **Auto-Updater & Commercial Support** | ❌ | ✅ Included |
+
+👉 Learn more about **[Synapse 4D Pro Edition](https://github.com/MShesat/synapse-4d-pro-edition)**.
 
 ---
 
-## 🚀 Quickstart
+## 🚀 Quick Start (CLI)
 
 ### 1. Installation
-
 ```bash
-git clone https://github.com/MShesat/synapse-4d.git
-cd synapse-4d
-pip install -e .
+pip install synapse4d
 ```
 
-### 2. Initialize a Cognitive Brain Vault
-
+### 2. Initialize a Cognitive Vault
 ```bash
-synapse4d init ./my-brain
+synapse4d init ./my-second-brain
 ```
 
-### 3. Run Autonomous 4D Consolidation
-
+### 3. Consolidate Episodic Sessions
 ```bash
-# Ingests recent episodic interactions and synthesizes permanent knowledge
-synapse4d consolidate --vault ./my-brain
+# Ingests recent daily notes, distills facts, resolves conflicts, and generates stubs
+synapse4d consolidate --vault ./my-second-brain
 ```
 
-### 4. Hybrid Multi-Dimensional Search
-
+### 4. Audit & Health Inspection
 ```bash
-synapse4d search "What database architecture was chosen?" --vault ./my-brain
+synapse4d audit --vault ./my-second-brain
 ```
 
-### 5. Audit Knowledge Graph Integrity
-
+### 5. Review Provisional Facts
 ```bash
-synapse4d audit --vault ./my-brain
+# Inspect facts flagged during heuristic fallback
+synapse4d review --vault ./my-second-brain
+
+# Promote a confirmed fact to active axiom
+synapse4d review --promote f_123456789abc --vault ./my-second-brain
 ```
 
-Output:
-```text
-=== Synapse 4D Vault Audit ===
-Vault: C:\Users\User\my-brain
-Total Nodes: 28
-Total Bindings: 83
-Broken Bindings: 0
-Health Score: 100.0%
+### 6. Time-Travel Deterministic Undo
+```bash
+# Rollback a specific consolidation session
+synapse4d undo sess_20261028_120000_a1b2c3 --vault ./my-second-brain
 ```
 
 ---
 
-## 🔌 Model Context Protocol (MCP) Server
+## 🔌 Native Model Context Protocol (MCP) Server
 
-Synapse 4D exposes native MCP endpoints for **Cursor, Claude Desktop, Antigravity, and VS Code**:
+Connect Synapse 4D directly to **Cursor**, **Claude Desktop**, **VS Code**, or **Antigravity**:
 
 ```json
 {
   "mcpServers": {
     "synapse4d": {
       "command": "synapse4d",
-      "args": ["serve", "--vault", "/absolute/path/to/vault"]
+      "args": ["serve", "--vault", "C:/path/to/my-vault"]
     }
   }
 }
 ```
 
-Exposed native tools:
-- `synapse_get_working_memory`: Retrieve $\mathcal{D}_1$ active attention state.
-- `synapse_search_memory`: Multi-dimensional vector + $\mathcal{D}_3$ Chronos retrieval.
-- `synapse_consolidate`: Trigger autonomous 4D distillation.
+### Available MCP Tools:
+- `synapse_get_working_memory`: Retrieve active focus scratchpad.
+- `synapse_search_memory`: Query active facts and associative knowledge.
+- `synapse_consolidate`: Trigger the 4D consolidation cycle.
+- `synapse_audit_vault`: Check health score, link status, and WAL journal.
+- `synapse_undo_session`: Revert a previous consolidation session.
+- `synapse_review_facts`: List facts pending supervisor review.
 
 ---
 
-## 💰 Commercial & Monetization Roadmap
+## 🧪 Mathematical Verification & Theorems
 
-Read the complete commercial roadmap and product packaging strategy:  
-👉 **[MONETIZATION_ROADMAP.md](./MONETIZATION_ROADMAP.md)**
+Synapse 4D is formally verified with property-based testing (`hypothesis`):
+- **Theorem 1 (Epistemic History Monotonicity):** Facts are never physically removed ($|\text{facts}(t)|$ is monotonically non-decreasing). Verified via `tests/test_d2_invariants.py`.
+- **Theorem 2 (Zero-Orphan Closure):** $|V_{\text{isolated}}| = 0$ for all topological entities. Verified via `tests/test_d4_invariants.py`.
+- **Theorem 3 (Crash Atomicity):** Reconciles corrupted disks post-`SIGKILL` using physical snapshots. Verified via `tests/test_journal_recovery.py`.
 
----
-
-## 📄 License & Attribution
-
-Distributed under the **MIT License**. See `LICENSE` for details.  
-Academic and technical citations:
-
-```bibtex
-@article{ruiz2026synapse4d,
-  title={Synapse 4D: A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for Autonomous Language Agents},
-  author={Ruiz, Ángel (@MShesat)},
-  year={2026},
-  month={October},
-  publisher={Zenodo / CERN Open Science & GitHub},
-  journal={Defensive Research Publication & Formal Patent Disclosure},
-  doi={10.5281/zenodo.23737307},
-  url={https://doi.org/10.5281/zenodo.23737307}
-}
+```bash
+# Run all verified invariant and integration tests
+pytest -v
 ```
 
 ---
 
-<p align="center">
-  <b>Designed & Developed with precision by <a href="https://github.com/MShesat">Ángel Ruiz (@MShesat)</a></b>
-</p>
+## 📄 License
+MIT License © 2026 MShesat. Commercial extensions licensed under Synapse 4D Commercial License.

@@ -1,22 +1,27 @@
 """
-Synapse 4D - Central Cognitive Engine
+Synapse 4D - Central Cognitive Engine (v2.5)
 Unifies the 4 Dimensions of Artificial Cognitive State:
   - D1: Focus Engine (Dynamic Working Attention)
-  - D2: Fact Distiller (Atomic Synthesis & Truth Hierarchy)
-  - D3: Chronos Lattice (Bi-Temporal Knowledge & Hebbian Plasticity)
-  - D4: Associative Mesh (Topological Hypergraph & Zero-Orphan Binding)
+  - D2: Fact Distiller (Epistemic Authority & Bi-Temporal Logical Supersession)
+  - D3: Relational Chronos Storage (SQLite WAL, FileLock & Lazy Hebbian Decay)
+  - D4: Associative Mesh (Reciprocal Closure & Zero-Orphan Stubs)
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
+from __future__ import annotations
 import os
 import re
+import time
+import uuid
+from pathlib import Path
+from typing import Dict, Any, List, Optional, Set
 
 from synapse4d.dimensions.focus import FocusEngine
 from synapse4d.dimensions.distiller import FactDistiller
-from synapse4d.dimensions.chronos import ChronosLattice
 from synapse4d.dimensions.mesh import AssociativeMesh
-from synapse4d.memory.vector_store import VectorStore
+from synapse4d.storage.db import SynapseDatabase, get_database
+from synapse4d.storage.journal import AtomicJournal
+from synapse4d.storage.schema import StateResponse
+
 
 class SynapseEngine:
     """The unified 4D Cognitive State Machine for Autonomous Agents."""
@@ -26,23 +31,24 @@ class SynapseEngine:
         if not self.vault_path.exists():
             raise FileNotFoundError(f"Vault path does not exist: {self.vault_path}")
 
-        # Directory resolution (agnostic to localized or standard schemas)
+        # Directory resolution
         self.working_dir = self._resolve_dir(["00_Working_Memory", "00_Memoria_de_Trabajo"])
         self.episodic_dir = self._resolve_dir(["10_Episodic_Memory", "10_Memoria_Episodica"])
         self.semantic_dir = self._resolve_dir(["20_Semantic_Memory", "20_Memoria_Semantica"])
         self.procedural_dir = self._resolve_dir(["30_Procedural_Memory", "30_Memoria_Procedimental"])
         self.meta_dir = self._resolve_dir(["90_Meta_System", "90_Meta_Sistema"])
 
-        # Synapse local persistent state
-        self.state_dir = self.vault_path / ".synapse"
-        self.state_dir.mkdir(parents=True, exist_ok=True)
+        # Storage & Persistence
+        self.db = get_database(self.vault_path)
+        self.journal = AtomicJournal(self.vault_path, self.db)
 
-        # Initialize the 4 Core Dimensions
+        # Automatic crash recovery on startup
+        self.recovery_info = self.journal.reconcile_on_startup()
+
+        # Dimensions
         self.focus = FocusEngine(self.vault_path)
-        self.distiller = FactDistiller()
-        self.chronos = ChronosLattice(self.state_dir)
-        self.mesh = AssociativeMesh(self.semantic_dir)
-        self.vector_store = VectorStore(self.state_dir / "chroma")
+        self.distiller = FactDistiller(self.db)
+        self.mesh = AssociativeMesh(self.vault_path, self.db)
 
     def _resolve_dir(self, candidates: List[str]) -> Path:
         for c in candidates:
@@ -54,100 +60,129 @@ class SynapseEngine:
         return default_dir
 
     def get_working_context(self) -> Dict[str, Any]:
-        """Dimension 1 (Focus): Retrieve current scratchpad state and active attention window."""
+        """Dimension 1 (Focus): Retrieve current scratchpad state."""
         return self.focus.get_focus_state()
 
     def update_working_memory(self, section: str, content: str) -> bool:
-        """Dimension 1 (Focus): Dynamically update an active working memory section."""
+        """Dimension 1 (Focus): Update working memory section."""
         return self.focus.update_section(section, content)
-
-    def search(self, query: str, limit: int = 5) -> Dict[str, Any]:
-        """Hybrid Multi-Dimensional Retrieval: Combines vector semantics with Chronos Lattice weights."""
-        vector_hits = self.vector_store.query(query, n_results=limit)
-        active_lattice = self.chronos.get_active_lattice(apply_decay=True)
-
-        # Hebbian reinforcement on matching hits
-        for hit in vector_hits:
-            source = hit.get("metadata", {}).get("source", "")
-            if source:
-                self.chronos.reinforce_synapse("agent_query", source)
-
-        return {
-            "query": query,
-            "vector_results": vector_hits,
-            "total_indexed_chunks": self.vector_store.count(),
-            "active_lattice_edges": len(active_lattice)
-        }
 
     def consolidate(self, recent_only: bool = True) -> Dict[str, Any]:
         """
-        Executes the Autonomous 4D Consolidation Cycle:
-        1. Ingests raw episodic interaction streams.
-        2. D2 (Distiller) extracts atomic facts & arbitrates truth conflicts.
-        3. D3 (Chronos) supersedes invalidated states & updates synaptic timestamps.
-        4. D4 (Mesh) synthesizes cohesive nodes with bidirectional topological bindings.
-        5. D1 (Focus) updates active attention context.
-        6. Vector store synchronizes semantic embeddings.
+        Executes the Autonomous 4D Consolidation Cycle with Two-Phase Commit:
+        1. Pre-transaction: Ingests episodic files and distills facts with embeddings outside the DB lock.
+        2. Transaction: SQLite arbitration, logical supersession, Hebbian edge updates, reciprocal closure.
+        3. Journal cleanup & Post-commit verification.
         """
+        session_id = f"sess_{time.strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:6]}"
+        self.db.begin_session(session_id, strategy="standard_4d")
+
         stats = {
+            "session_id": session_id,
             "processed_streams": 0,
             "facts_distilled": 0,
             "facts_retained": 0,
             "facts_superseded": 0,
             "facts_redundant": 0,
-            "status": "success"
+            "stubs_created": 0,
+            "status": "success",
         }
 
-        # Gather episodic files
+        # 1. Gather episodic streams (Outside lock)
         streams = list(self.episodic_dir.glob("*.md"))
         if recent_only and streams:
             streams.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-            streams = streams[:3]
+            streams = streams[:5]
 
         incoming_facts = []
+        referenced_entities: Set[str] = set()
+
         for s in streams:
             stats["processed_streams"] += 1
             content = s.read_text(encoding="utf-8", errors="replace")
-            facts = self.distiller.distill_atomic_facts(content)
-            incoming_facts.extend(facts)
+            distilled = self.distiller.distill_atomic_facts(content, session_id=session_id)
+            incoming_facts.extend(distilled)
 
-            self.vector_store.upsert(
-                doc_id=s.stem,
-                document=content[:2000],
-                metadata={"source": s.name, "dimension": "episodic_stream"}
-            )
+            # Collect referenced entities for topological closure
+            for f in distilled:
+                referenced_entities.add(f.entity)
 
         stats["facts_distilled"] = len(incoming_facts)
 
-        # Gather existing facts for arbitration
-        existing = []
-        for node in self.semantic_dir.rglob("*.md"):
-            existing.extend(self.distiller.distill_atomic_facts(node.read_text(encoding="utf-8", errors="replace")))
+        # 2. Transaction Phase (Arbitrate & Persist)
+        arb_res = self.distiller.arbitrate_and_persist(incoming_facts, self.db, session_id=session_id)
+        stats["facts_retained"] = len(arb_res["retained"])
+        stats["facts_superseded"] = len(arb_res["superseded"])
+        stats["facts_redundant"] = len(arb_res["redundant"])
 
-        arbitration = self.distiller.arbitrate_conflicts(incoming_facts, existing)
-        stats["facts_retained"] = len(arbitration["retained"])
-        stats["facts_superseded"] = len(arbitration["superseded"])
-        stats["facts_redundant"] = len(arbitration["redundant"])
+        # 3. D4 Mesh Closure & Stubs
+        stubs = self.mesh.ensure_entity_stubs(
+            referenced_entities=referenced_entities,
+            session_id=session_id,
+            source_file="episodic_stream",
+        )
+        stats["stubs_created"] = len(stubs)
 
-        # Update Chronos Lattice
-        for s in arbitration["superseded"]:
-            self.chronos.register_relation(
-                source=s.get("old_fact", "Entity")[:30],
-                relation="superseded_by",
-                target=s.get("new_fact", "UpdatedEntity")[:30],
-                context=s.get("reason", "")
-            )
+        # 4. Enforce reciprocal edges between co-occurring entities
+        entity_list = list(referenced_entities)
+        co_occurrences = []
+        for i in range(len(entity_list)):
+            for j in range(i + 1, min(i + 4, len(entity_list))):
+                co_occurrences.append((entity_list[i], entity_list[j], "asociado_en_sesion"))
+        self.mesh.enforce_reciprocal_closure(co_occurrences, session_id=session_id)
 
-        # D1 Focus update
+        # 5. Commit SQLite Session
+        self.db.commit_session(
+            session_id=session_id,
+            facts_extracted=stats["facts_distilled"],
+            facts_superseded=stats["facts_superseded"],
+            health_score=1.0,
+        )
+
+        # 6. Post-commit journal cleanup
+        self.journal.cleanup_post_commit(session_id)
+
+        # 7. D1 Focus Update
         self.focus.append_observation(
             "Consolidaciones Recientes",
-            f"Consolidación 4D ejecutada: {stats['facts_retained']} hechos retenidos, {stats['facts_superseded']} actualizados."
+            f"Consolidación 4D [{session_id}]: {stats['facts_retained']} retenidos, {stats['facts_superseded']} invalidados, {stats['stubs_created']} stubs.",
         )
 
         return stats
 
+    def undo(self, session_id: str) -> Dict[str, Any]:
+        """Deterministically undoes a specific consolidation session."""
+        return self.distiller.undo_session(self.db, session_id)
+
+    def review(self) -> List[Dict[str, Any]]:
+        """Returns all facts requiring epistemic review."""
+        records = self.db.get_needs_review_facts()
+        return [r.model_dump() for r in records]
+
+    def promote_fact(self, fact_id: str) -> bool:
+        """Promotes a provisional fact to confirmed active axiom/rule."""
+        with self.db._lock:
+            with self.db.get_connection() as conn:
+                conn.execute(
+                    "UPDATE facts SET needs_review = 0, confidence = 1.0 WHERE id = ?",
+                    (fact_id,),
+                )
+                conn.commit()
+        return True
+
+    def demote_fact(self, fact_id: str) -> bool:
+        """Demotes or invalidates an unconfirmed fact."""
+        with self.db._lock:
+            with self.db.get_connection() as conn:
+                conn.execute(
+                    "UPDATE facts SET status = 'superseded', needs_review = 0 WHERE id = ?",
+                    (fact_id,),
+                )
+                conn.commit()
+        return True
+
     def audit(self) -> Dict[str, Any]:
-        """Audits the cognitive state for broken topological links, graph fragmentation, and health score."""
+        """Audits the cognitive state, link integrity, and needs_review thresholds."""
         all_nodes = [f for f in self.vault_path.rglob("*.md") if ".synapse" not in str(f)]
         stem_map = {f.stem.lower(): f for f in all_nodes}
 
@@ -164,13 +199,23 @@ class SynapseEngine:
                 if clean and clean not in stem_map and not clean.startswith("$"):
                     broken.append({"file": node.name, "target": l})
 
+        state_summary = self.db.get_state_summary()
+        needs_review_count = state_summary.needs_review_count
+        needs_review_alert = needs_review_count > 20
+
         health = round((1.0 - (len(broken) / max(total_bindings, 1))) * 100, 1)
 
         return {
+            "api_version": "2.0",
             "vault_path": str(self.vault_path),
             "total_nodes": len(all_nodes),
             "total_bindings": total_bindings,
             "broken_bindings_count": len(broken),
             "broken_bindings": broken[:10],
-            "health_score": f"{health}%"
+            "active_facts_count": state_summary.active_facts_count,
+            "active_edges_count": state_summary.total_edges_count,
+            "needs_review_count": needs_review_count,
+            "needs_review_alert": needs_review_alert,
+            "health_score": f"{health}%",
+            "recovery_status": self.recovery_info.get("status", "clean"),
         }

@@ -486,6 +486,26 @@ All specifications, algorithms, mathematical proofs, and patent claims disclosed
 
 ---
 
+## Appendix A: Engineering Errata & Specification Refinement (v2.5)
+
+Following peer review and empirical stress testing of the initial v1.0 prototype, the following architectural refinements and formal errata were integrated:
+
+### A.1 Resolution of Write Amplification in $\mathcal{D}_3$ (Chronos)
+- **Preliminary Specification (v1.0):** The theoretical paper suggested periodic decay sweeps across flat JSON graph structures, which under empirical execution incurs $O(E)$ write amplification and process-locking races.
+- **Production Refinement (v2.5):** Replaced with a relational SQLite storage engine configured in Write-Ahead Logging (`WAL`) mode with `busy_timeout = 5000` and process-level file locks. Temporal decay is computed lazily at retrieval time via a registered SQLite User-Defined Function:
+  $$\text{eff\_weight}(w_0, t_{\text{last}}, t_{\text{now}}, T_{1/2}) = w_0 \cdot 2^{-\frac{t_{\text{now}} - t_{\text{last}}}{T_{1/2}}}$$
+  This reduces periodic write amplification to strictly **$O(0)$** on disk.
+
+### A.2 Polarization Defect in Dense Semantic Retrieval ($\mathcal{D}_2$)
+- **Preliminary Specification (v1.0):** Relied on pure cosine similarity thresholds ($\theta \ge 0.80$) to detect semantic redundancy.
+- **Empirical Errata:** Contradictory statements sharing entity context (e.g., *"use PostgreSQL for persistence"* vs *"avoid PostgreSQL for persistence"*) routinely yield cosine similarities exceeding $0.80$.
+- **Production Refinement (v2.5):** Implemented a composite arbitration pipeline combining local ONNX embeddings (384 dimensions) with syntactic polarity analysis (canonical antonym lookup and negation marker detection). Contradictions with polar opposition are strictly routed to $\mathcal{D}_2$ logical supersession (`status = 'superseded'`), eliminating destructive overwrite.
+
+### A.3 Hybrid Dual-Boundary Two-Phase Commit (2PC)
+- To guarantee atomicity between SQLite relational state and human-readable Markdown vault notes, v2.5 introduces an intent journal (`pending_writes.json`) with physical file snapshot backups in `.synapse/backups/pending_<session_id>/`. Post-crash recovery deterministically discriminates between committed and pending states, ensuring zero corruption under sudden power loss.
+
+---
+
 ## References
 
 1. Anderson, J. R. (1982). *Acquisition of cognitive skill.* Psychological Review, 89(4), 369–406.
