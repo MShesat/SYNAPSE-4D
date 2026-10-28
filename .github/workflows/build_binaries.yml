@@ -65,3 +65,9 @@ jobs:
         with:
           name: ${{ matrix.asset_name }}
           path: dist_release/${{ matrix.asset_name }}
+
+      - name: Release Asset
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist_release/${{ matrix.asset_name }}
