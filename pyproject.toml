@@ -7,7 +7,7 @@ name = "synapse4d"
 version = "1.0.0"
 description = "Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly"
 readme = "README.md"
-authors = [{ name = "MShesat" }]
+authors = [{ name = "Ángel Ruiz (@MShesat)" }]
 license = { text = "MIT" }
 requires-python = ">=3.10"
 classifiers = [

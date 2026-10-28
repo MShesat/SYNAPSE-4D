@@ -1,6 +1,6 @@
 # Synapse 4D: A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for Autonomous Language Agents
 
-**Author:** MShesat  
+**Author:** Ángel Ruiz (@MShesat)  
 **Affiliation:** Independent Research Lab / Open Source Initiative  
 **Date:** October 2026  
 **Classification:** Computer Science — Artificial Intelligence (cs.AI), Multi-Agent Systems (cs.MA), Information Retrieval (cs.IR)  
@@ -162,4 +162,4 @@ Unlike isolated frameworks:
 
 ---
 
-*Published by MShesat — October 2026. All mathematical, structural, and computational specifications disclosed herein serve as public, defensible prior art.*
+*Published by Ángel Ruiz (@MShesat) — October 2026. All mathematical, structural, and computational specifications disclosed herein serve as public, defensible prior art.*

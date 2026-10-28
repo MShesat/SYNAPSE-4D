@@ -1,6 +1,6 @@
 # Synapse 4D: Monetization & Commercial Strategy
 
-> **Author:** MShesat  
+> **Author:** Ángel Ruiz (@MShesat)  
 > **Product Classification:** Local-First Cognitive Memory OS & Universal Agent State Infrastructure  
 > **Revenue Model:** Dual-Track (Open-Core Community Engine + Commercial Turn-Key Product Pack)
 
@@ -66,4 +66,4 @@ Existing platforms either sell expensive cloud-only APIs ($19–$249/mo) with ve
 
 ---
 
-*Designed and authored by MShesat — Synapse 4D Initiative*
+*Designed and authored by Ángel Ruiz (@MShesat) — Synapse 4D Initiative*

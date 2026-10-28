@@ -8,7 +8,7 @@ Features:
 """
 
 __version__ = "1.0.0"
-__author__ = "MShesat"
+__author__ = "Ángel Ruiz (@MShesat)"
 __license__ = "MIT"
 
 from synapse4d.core import SynapseEngine

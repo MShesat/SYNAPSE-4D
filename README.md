@@ -174,9 +174,9 @@ Distributed under the **MIT License**. See `LICENSE` for details.
 Academic and technical citations:
 
 ```bibtex
-@article{mshesat2026synapse4d,
+@article{ruiz2026synapse4d,
   title={Synapse 4D: A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for Autonomous Language Agents},
-  author={MShesat},
+  author={Ruiz, Ángel (@MShesat)},
   year={2026},
   publisher={GitHub},
   journal={Defensive Research Publication}
@@ -186,5 +186,5 @@ Academic and technical citations:
 ---
 
 <p align="center">
-  <b>Designed & Developed with precision by <a href="https://github.com/MShesat">MShesat</a></b>
+  <b>Designed & Developed with precision by <a href="https://github.com/MShesat">Ángel Ruiz (@MShesat)</a></b>
 </p>
