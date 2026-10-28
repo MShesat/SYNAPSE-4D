@@ -3,7 +3,7 @@
 **Author:** Ángel Ruiz (@MShesat)  
 **Affiliation:** Independent Research Lab / Open Source Cognitive Systems Initiative  
 **Date:** October 2026  
-**DOI:** [10.5281/zenodo.23737307](https://doi.org/10.5281/zenodo.23737307)  
+**DOI:** [10.5281/zenodo.23747735](https://doi.org/10.5281/zenodo.23747735)  
 **Classification:** Computer Science — Artificial Intelligence (`cs.AI`), Multi-Agent Systems (`cs.MA`), Information Retrieval (`cs.IR`), Distributed Systems (`cs.DS`)  
 **Patent Specification Status:** Formal Defensive Publication & Incontestable Prior Art Establishment (Defensive Patent Standard under WIPO/USPTO/EPO Guidelines)
 
@@ -539,8 +539,8 @@ Following peer review and empirical stress testing of the initial v1.0 prototype
   month={October},
   publisher={Zenodo / CERN Open Science & GitHub},
   journal={Defensive Research Publication & Formal Patent Disclosure},
-  doi={10.5281/zenodo.23737307},
-  url={https://doi.org/10.5281/zenodo.23737307}
+  doi={10.5281/zenodo.23747735},
+  url={https://doi.org/10.5281/zenodo.23747735}
 }
 ```
 
