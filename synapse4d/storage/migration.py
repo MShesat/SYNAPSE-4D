@@ -45,7 +45,7 @@ class VaultMigrator:
 
         edges_migrated = 0
         facts_migrated = 0
-        session_id = f"sess_migrate_{timestamp}"
+        session_id = f"sess_migrate_{timestamp}_{time.time_ns() % 1000000:06d}"
 
         if legacy_lattice.exists():
             try:
