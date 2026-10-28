@@ -1,0 +1,71 @@
+name: Multiplatform PyInstaller Binary Build (Gatekeeper G2)
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            artifact_name: synapse4d-windows-x64.exe
+            asset_name: synapse4d-windows-x64.exe
+          - os: ubuntu-latest
+            artifact_name: synapse4d
+            asset_name: synapse4d-linux-x64
+          - os: macos-latest
+            artifact_name: synapse4d
+            asset_name: synapse4d-macos-arm64
+          - os: macos-13
+            artifact_name: synapse4d
+            asset_name: synapse4d-macos-x64
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller pytest hypothesis
+          pip install -e .
+
+      - name: Run Test Suite Verification
+        run: |
+          pytest tests/ -v
+
+      - name: Compile Standalone Binary with PyInstaller
+        run: |
+          pyinstaller --noconfirm --onedir --windowed --name synapse4d --entrypoint synapse4d.cli:main
+
+      - name: Package Binary Artifact
+        shell: bash
+        run: |
+          mkdir -p dist_release
+          if [ "${{ runner.os }}" == "Windows" ]; then
+            cp dist/synapse4d/synapse4d.exe dist_release/${{ matrix.asset_name }}
+          else
+            cp dist/synapse4d/synapse4d dist_release/${{ matrix.asset_name }}
+            chmod +x dist_release/${{ matrix.asset_name }}
+          fi
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset_name }}
+          path: dist_release/${{ matrix.asset_name }}
