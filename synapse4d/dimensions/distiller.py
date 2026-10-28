@@ -36,8 +36,9 @@ class FactDistiller:
         """
         Extract atomic facts with fallback morpheme heuristics and epistemic classification.
         Marks facts with needs_review=1 when extracted via local fallback heuristics.
+        Uses batched embedding inference for maximum throughput.
         """
-        extracted_facts: List[FactRecord] = []
+        candidates = []
         lines = [l.strip() for l in raw_text.splitlines() if l.strip()]
         now_iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
 
@@ -52,46 +53,43 @@ class FactDistiller:
                     elif any(k in lower for k in ["prefiere", "prefer", "default", "predeterminado", "siempre"]):
                         authority = "preference"
 
-                    # Parse candidate entity and value
                     entity, attr, val = self._parse_entity_attribute_value(clean)
-                    fact_id = f"f_{uuid.uuid4().hex[:12]}"
-                    vec = self.embedding_engine.embed_text(clean)
-
-                    record = FactRecord(
-                        id=fact_id,
-                        entity=entity,
-                        attribute=attr,
-                        value=val,
-                        status="active",
-                        confidence=self.authority_weights[authority],
-                        session_id=session_id,
-                        valid_from=now_iso,
-                        needs_review=1 if authority != "axiom" else 0,
-                        embedding=vec,
-                    )
-                    extracted_facts.append(record)
+                    conf = self.authority_weights[authority]
+                    nr = 1 if authority != "axiom" else 0
+                    candidates.append((clean, entity, attr, val, conf, nr))
 
             elif any(v in line.lower() for v in [" es ", " usa ", " tiene ", " is ", " uses ", " has ", " requires "]):
                 if len(line) > 18 and not line.startswith("```"):
                     entity, attr, val = self._parse_entity_attribute_value(line)
-                    fact_id = f"f_{uuid.uuid4().hex[:12]}"
-                    vec = self.embedding_engine.embed_text(line)
+                    candidates.append((line, entity, attr, val, 0.5, 1))
 
-                    record = FactRecord(
-                        id=fact_id,
-                        entity=entity,
-                        attribute=attr,
-                        value=val,
-                        status="active",
-                        confidence=0.5,
-                        session_id=session_id,
-                        valid_from=now_iso,
-                        needs_review=1,
-                        embedding=vec,
-                    )
-                    extracted_facts.append(record)
+        if not candidates:
+            return []
 
-        return extracted_facts[:30]
+        # Vectorized batch embedding (single pass over ONNX runtime)
+        candidates = candidates[:30]
+        texts = [c[0] for c in candidates]
+        vectors = self.embedding_engine.embed_batch(texts)
+
+        extracted_facts: List[FactRecord] = []
+        for i, (text, entity, attr, val, conf, nr) in enumerate(candidates):
+            fact_id = f"f_{uuid.uuid4().hex[:12]}"
+            vec = vectors[i] if i < len(vectors) else None
+            record = FactRecord(
+                id=fact_id,
+                entity=entity,
+                attribute=attr,
+                value=val,
+                status="active",
+                confidence=conf,
+                session_id=session_id,
+                valid_from=now_iso,
+                needs_review=nr,
+                embedding=vec,
+            )
+            extracted_facts.append(record)
+
+        return extracted_facts
 
     def _parse_entity_attribute_value(self, statement: str) -> Tuple[str, str, str]:
         """Extract coarse-grained (entity, attribute, value) triple."""

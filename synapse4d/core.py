@@ -21,6 +21,7 @@ from synapse4d.dimensions.mesh import AssociativeMesh
 from synapse4d.storage.db import SynapseDatabase, get_database
 from synapse4d.storage.journal import AtomicJournal
 from synapse4d.storage.schema import StateResponse
+from synapse4d.nlp.embeddings import compute_similarity
 
 
 class SynapseEngine:
@@ -219,3 +220,41 @@ class SynapseEngine:
             "health_score": f"{health}%",
             "recovery_status": self.recovery_info.get("status", "clean"),
         }
+
+    def search(self, query: str, limit: int = 5) -> List[Dict[str, Any]]:
+        """
+        Hybrid Semantic Search:
+        Embeds the query vector using local ONNX model, measures cosine affinity
+        against all active facts in SQLite, and weights by epistemic confidence.
+        """
+        if not query or not query.strip():
+            return []
+
+        query_clean = query.strip()
+        query_vec = self.distiller.embedding_engine.embed_text(query_clean)
+        active_facts = self.db.get_active_facts()
+
+        scored = []
+        q_lower = query_clean.lower()
+        for f in active_facts:
+            sim = 0.0
+            if query_vec and f.embedding:
+                sim = compute_similarity(query_vec, f.embedding)
+
+            # Bonificación léxica por coincidencia exacta
+            lexical_boost = 0.25 if (q_lower in f.value.lower() or q_lower in f.entity.lower()) else 0.0
+            score = (sim * 0.65) + (f.confidence * 0.20) + lexical_boost
+
+            scored.append({
+                "id": f.id,
+                "entity": f.entity,
+                "attribute": f.attribute,
+                "value": f.value,
+                "confidence": f.confidence,
+                "needs_review": f.needs_review,
+                "score": round(score, 4),
+                "similarity": round(sim, 4),
+            })
+
+        scored.sort(key=lambda x: x["score"], reverse=True)
+        return scored[:limit]

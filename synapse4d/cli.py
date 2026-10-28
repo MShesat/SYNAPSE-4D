@@ -99,14 +99,15 @@ def main():
 
     elif args.command == "search":
         engine = SynapseEngine(args.vault)
-        facts = engine.db.get_active_facts()
-        matches = [f for f in facts if args.query.lower() in f.value.lower() or args.query.lower() in f.entity.lower()]
-        print(f"\n[Synapse 4D - Resultados para: '{args.query}']\n")
-        if not matches:
+        results = engine.search(args.query, limit=args.limit)
+        print(f"\n[Synapse 4D - Búsqueda Híbrida Semántica para: '{args.query}']\n")
+        if not results:
             print("No se encontraron hechos activos coincidentes.")
-        for i, hit in enumerate(matches[:args.limit], 1):
-            rev_tag = " [PENDIENTE DE REVISIÓN]" if hit.needs_review else ""
-            print(f"[{i}] ({hit.entity} -> {hit.attribute}): {hit.value}{rev_tag} (Conf: {hit.confidence})")
+        for i, hit in enumerate(results, 1):
+            rev_tag = " [PENDIENTE DE REVISIÓN]" if hit.get("needs_review") else ""
+            sim = hit.get("similarity", 0.0)
+            score = hit.get("score", 0.0)
+            print(f"[{i}] ({hit['entity']} -> {hit['attribute']}): {hit['value']}{rev_tag} | Score: {score:.3f} (Sim: {sim:.3f}, Conf: {hit['confidence']})")
         print()
 
     elif args.command == "audit":
