@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://doi.org/10.5281/zenodo.23737307"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23737307.svg" alt="DOI: 10.5281/zenodo.23737307"></a>
   <a href="https://github.com/MShesat/synapse-4d/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
   <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-Compatible-brightgreen.svg" alt="MCP Compatible"></a>
@@ -192,8 +193,11 @@ Academic and technical citations:
   title={Synapse 4D: A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for Autonomous Language Agents},
   author={Ruiz, Ángel (@MShesat)},
   year={2026},
-  publisher={GitHub},
-  journal={Defensive Research Publication}
+  month={October},
+  publisher={Zenodo / CERN Open Science & GitHub},
+  journal={Defensive Research Publication & Formal Patent Disclosure},
+  doi={10.5281/zenodo.23737307},
+  url={https://doi.org/10.5281/zenodo.23737307}
 }
 ```
 

@@ -3,6 +3,7 @@
 # 🧠 Synapse 4D (v1.0.0)
 ### Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for AI Agents & Human Knowledge
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23737307.svg)](https://doi.org/10.5281/zenodo.23737307)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
 [![MCP Server](https://img.shields.io/badge/MCP-Compatible-brightgreen.svg)](https://modelcontextprotocol.io/)
@@ -101,7 +102,7 @@ All mathematical architectures, topological invariants, and computational mechan
 ### 🔐 Cryptographic Authenticity Proof (SHA-256 Checksums)
 
 ```text
-SHA256 (WHITE_PAPER.pdf)                  = 71AD506DA1DA67FEE75D834373A87A88D9000BD0638543F6B2AC2827EF867C0D
+SHA256 (WHITE_PAPER.pdf)                  = D0AEADC1E56C9897717787C5FEAA08C98D4D6A48E68C0C72DDA16F58ACE91090
 SHA256 (synapse4d-1.0.0-py3-none-any.whl) = C1E3F5D801C6A18FC6ACC27E43C24BE81677D4C48DE3DA265AA1F600E7673992
 SHA256 (synapse4d-1.0.0.tar.gz)           = FFED54D13CE4710023E3079FAB1E25F54F996B1EDF971BF6784F9965A7558C7B
 ```
@@ -153,9 +154,10 @@ Add to your `cursor.json`, `claude_desktop_config.json`, or Antigravity settings
   author={Ruiz, Ángel (@MShesat)},
   year={2026},
   month={October},
-  publisher={GitHub / Open Science},
+  publisher={Zenodo / CERN Open Science & GitHub},
   journal={Defensive Research Publication & Formal Patent Disclosure},
-  url={https://github.com/MShesat/SYNAPSE-4D}
+  doi={10.5281/zenodo.23737307},
+  url={https://doi.org/10.5281/zenodo.23737307}
 }
 ```
 

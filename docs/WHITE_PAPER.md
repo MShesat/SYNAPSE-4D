@@ -3,6 +3,7 @@
 **Author:** Ángel Ruiz (@MShesat)  
 **Affiliation:** Independent Research Lab / Open Source Cognitive Systems Initiative  
 **Date:** October 2026  
+**DOI:** [10.5281/zenodo.23737307](https://doi.org/10.5281/zenodo.23737307)  
 **Classification:** Computer Science — Artificial Intelligence (`cs.AI`), Multi-Agent Systems (`cs.MA`), Information Retrieval (`cs.IR`), Distributed Systems (`cs.DS`)  
 **Patent Specification Status:** Formal Defensive Publication & Incontestable Prior Art Establishment (Defensive Patent Standard under WIPO/USPTO/EPO Guidelines)
 
@@ -516,9 +517,10 @@ All specifications, algorithms, mathematical proofs, and patent claims disclosed
   author={Ruiz, Ángel (@MShesat)},
   year={2026},
   month={October},
-  publisher={GitHub / Open Science},
+  publisher={Zenodo / CERN Open Science & GitHub},
   journal={Defensive Research Publication & Formal Patent Disclosure},
-  url={https://github.com/MShesat/SYNAPSE-4D}
+  doi={10.5281/zenodo.23737307},
+  url={https://doi.org/10.5281/zenodo.23737307}
 }
 ```
 
