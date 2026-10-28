@@ -23,7 +23,7 @@
 
 Synapse 4D is formally specified as a mathematically rigorous cognitive state machine.  
 Read the full defensive patent specification, mathematical proofs, and asymptotic complexity analysis:  
-👉 **[Read the White Paper (cs.AI / cs.MA)](./docs/WHITE_PAPER.md)**
+👉 **[Read the White Paper (cs.AI / cs.MA)](./docs/WHITE_PAPER.md)** &nbsp;|&nbsp; 📥 **[Download Academic PDF](./docs/WHITE_PAPER.pdf)**
 
 ---
 

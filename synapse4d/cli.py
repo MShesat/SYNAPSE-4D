@@ -74,8 +74,8 @@ def main():
         engine = SynapseEngine(args.vault)
         print(f"[Synapse 4D] Consolidating vault: {engine.vault_path}...")
         res = engine.consolidate(recent_only=not args.all)
-        print(f"[OK] Logs processed: {res['processed_logs']}")
-        print(f"[OK] Facts extracted: {res['facts_extracted']} (+{res['facts_added']} added, ~{res['facts_updated']} updated, ={res['facts_noop']} duplicates skipped)")
+        print(f"[OK] Streams processed: {res['processed_streams']}")
+        print(f"[OK] Facts distilled: {res['facts_distilled']} (+{res['facts_retained']} retained, ~{res['facts_superseded']} superseded, ={res['facts_redundant']} redundant skipped)")
 
     elif args.command == "search":
         engine = SynapseEngine(args.vault)
