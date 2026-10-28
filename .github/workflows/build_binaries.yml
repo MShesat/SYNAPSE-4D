@@ -15,16 +15,12 @@ jobs:
       matrix:
         include:
           - os: windows-latest
-            artifact_name: synapse4d-windows-x64.exe
             asset_name: synapse4d-windows-x64.exe
           - os: ubuntu-latest
-            artifact_name: synapse4d
             asset_name: synapse4d-linux-x64
           - os: macos-latest
-            artifact_name: synapse4d
             asset_name: synapse4d-macos-arm64
           - os: macos-13
-            artifact_name: synapse4d
             asset_name: synapse4d-macos-x64
 
     runs-on: ${{ matrix.os }}
@@ -51,16 +47,16 @@ jobs:
 
       - name: Compile Standalone Binary with PyInstaller
         run: |
-          pyinstaller --noconfirm --onedir --windowed --name synapse4d --entrypoint synapse4d.cli:main
+          pyinstaller --noconfirm --onefile --console --name synapse4d synapse4d/cli.py
 
       - name: Package Binary Artifact
         shell: bash
         run: |
           mkdir -p dist_release
           if [ "${{ runner.os }}" == "Windows" ]; then
-            cp dist/synapse4d/synapse4d.exe dist_release/${{ matrix.asset_name }}
+            cp dist/synapse4d.exe dist_release/${{ matrix.asset_name }}
           else
-            cp dist/synapse4d/synapse4d dist_release/${{ matrix.asset_name }}
+            cp dist/synapse4d dist_release/${{ matrix.asset_name }}
             chmod +x dist_release/${{ matrix.asset_name }}
           fi
 
