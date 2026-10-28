@@ -71,6 +71,7 @@ class SynapseDatabase:
         conn.execute("PRAGMA synchronous = NORMAL;")
         conn.execute("PRAGMA busy_timeout = 5000;")
         conn.execute("PRAGMA foreign_keys = ON;")
+        conn.create_function("eff_weight", 3, lambda bw, le, ne: eff_weight_udf(bw, le, ne))
         conn.create_function("eff_weight", 4, eff_weight_udf)
         return conn
 
