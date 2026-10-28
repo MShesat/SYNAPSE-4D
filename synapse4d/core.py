@@ -147,8 +147,10 @@ class SynapseEngine:
             links = re.findall(r'\[\[(.*?)\]\]', text)
             for link in links:
                 total_links += 1
-                target = link.split("|")[0].split("#")[0].strip().lower()
-                if target and target not in stem_map and not target.startswith("$"):
+                raw_target = link.split("|")[0].split("#")[0].strip()
+                # Handle relative path and extension variants in Obsidian
+                clean_target = raw_target.replace("\\", "/").split("/")[-1].replace(".md", "").strip().lower()
+                if clean_target and clean_target not in stem_map and not clean_target.startswith("$"):
                     broken_links.append({"file": f.name, "broken_target": link})
 
         return {
