@@ -1,6 +1,10 @@
 # 🧠 Synapse 4D
 
 <p align="center">
+  <img src="./assets/synapse4d_logo.jpg" alt="Synapse 4D Logo" width="300">
+</p>
+
+<p align="center">
   <b>A Multi-Dimensional Cognitive State Matrix with Temporal Decay and Autonomous Topological Self-Assembly for AI Agents & Human Knowledge.</b><br>
   <i>Sub-second, local-first artificial cognition combining Working Attention, Atomic Distillation, Bi-Temporal Reality Tracking, and Zero-Orphan Associative Meshes.</i>
 </p>
