@@ -2,15 +2,17 @@
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # C extensions
 *.so
 
-# Distribution / packaging
+# Distribution / packaging / binaries
 .Python
 build/
 develop-eggs/
 dist/
+bin/
 downloads/
 eggs/
 .eggs/
@@ -25,8 +27,11 @@ share/python-wheels/
 .installed.cfg
 *.egg
 MANIFEST
+*.exe
+*.zip
+*.tar.gz
 
-# Virtual Environments
+# Virtual Environments & secrets
 .env
 .venv
 env/
@@ -35,11 +40,17 @@ ENV/
 env.bak/
 venv.bak/
 
-# Synapse internal runtime cache
+# Synapse internal runtime cache & vaults
 .synapse/
+.hypothesis/
 .pytest_cache/
 .coverage
 htmlcov/
+vault/
+test_vault_comprador/
+os ai/
+*.db
+*.sqlite3
 
 # OS specific
 .DS_Store

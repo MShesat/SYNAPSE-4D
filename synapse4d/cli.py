@@ -14,6 +14,11 @@ from synapse4d.storage.migration import VaultMigrator
 
 
 def main():
+    if hasattr(sys.stdout, "reconfigure"):
+        try:
+            sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+        except Exception:
+            pass
     parser = argparse.ArgumentParser(
         prog="synapse4d",
         description=f"Synapse 4D (v{__version__}) - Arquitectura de Memoria Persistente 4D para Agentes de IA y Obsidian"
@@ -181,8 +186,7 @@ def main():
         print("El HUD interactivo 2D/3D es parte de Synapse 4D Pro Edition.")
         print("Para lanzarlo con interfaz visual nativa y soporte para Obsidian:")
         print("  1. Adquiere o activa Synapse 4D Pro Edition.")
-        print("  2. Ejecuta: synapse4d-pro --vault <ruta_boveda>")
-        print("  O consulta: https://github.com/MShesat/synapse-4d#pro-edition\n")
+        print("  2. Consulta: https://synapse4d.lemonsqueezy.com/buy\n")
 
     elif args.command == "serve":
         from synapse4d.mcp_server import run_mcp_server

@@ -13,7 +13,7 @@
   <a href="https://github.com/MShesat/synapse-4d/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.10%2B-blue.svg" alt="Python 3.10+"></a>
   <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/MCP-Compatible-brightgreen.svg" alt="MCP Compatible"></a>
-  <a href="https://doi.org/10.5281/zenodo.23737307"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23737307.svg" alt="DOI: 10.5281/zenodo.23737307"></a>
+  <a href="https://doi.org/10.5281/zenodo.23747735"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.23747735.svg" alt="DOI: 10.5281/zenodo.23747735"></a>
 </p>
 
 ---
@@ -148,6 +148,7 @@ While the open-source CLI and MCP server work with any directory of Markdown fil
 ## 📄 Academic Preprint & Errata Notice
 
 An early preprint describing the initial conceptual design is registered at Zenodo:
+- **Preprint DOI v2:** [10.5281/zenodo.23747735](https://doi.org/10.5281/zenodo.23747735)
 - **Preprint DOI v1:** [10.5281/zenodo.23737307](https://doi.org/10.5281/zenodo.23737307)
 
 > **⚠️ Errata Notice:** Version 1 of this preprint contained several enthusiastic formulations and broad theoretical claims (including early precision claims based on a restricted sample). We are preparing a revised Version 2 preprint with an accompanying errata note to calibrate all claims strictly against verifiable, reproducible benchmark data.
